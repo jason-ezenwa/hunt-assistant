@@ -2,7 +2,10 @@ import OpenAI from "openai";
 import { logEvent } from "../core/logger";
 import { IAiService } from "./ai.interface";
 import { GenerateCoverLetterDto, GenerateInsightsDto } from "./types";
-import { constructCoverLetterPrompt, constructInsightsPrompt } from "./utils";
+import {
+  constructCoverLetterMessages,
+  constructInsightsMessages,
+} from "./utils";
 
 const openAI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -21,10 +24,10 @@ class OpenAIService implements IAiService {
     try {
       logEvent("info", "Generating insights from OpenAI");
       const { resumeText, jobDescription } = data;
-      const prompt = constructInsightsPrompt(resumeText, jobDescription);
+      const messages = constructInsightsMessages(resumeText, jobDescription);
 
       const completion = await openAI.chat.completions.create({
-        messages: [{ role: "user", content: prompt }],
+        messages: messages,
         model: "gpt-3.5-turbo",
       });
 
@@ -42,14 +45,15 @@ class OpenAIService implements IAiService {
   ): Promise<{ coverLetter: string }> {
     try {
       const { resumeText, jobDescription } = data;
-      const prompt = constructCoverLetterPrompt(resumeText, jobDescription);
+      const messages = constructCoverLetterMessages(resumeText, jobDescription);
 
       const completion = await openAI.chat.completions.create({
-        messages: [{ role: "user", content: prompt }],
+        messages: messages,
         model: "gpt-3.5-turbo",
       });
 
       const coverLetter = completion.choices[0]?.message?.content || "";
+      logEvent("info", "Successfully generated cover letter from OpenAI");
       return { coverLetter };
     } catch (error) {
       logEvent("error", "Error generating cover letter from OpenAI", { error });
