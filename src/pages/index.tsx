@@ -1,115 +1,359 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import { useState, useRef } from "react";
+import { Geist } from "next/font/google";
+import AppButton from "@/components/ui/app-button";
+import { FileText, Loader2, Download } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+interface APIResponse {
+  insights?: string;
+  coverLetter?: string;
+  error?: string;
+}
 
 export default function Home() {
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [jobDescription, setJobDescription] = useState("");
+  const [insights, setInsights] = useState<string>("");
+  const [coverLetter, setCoverLetter] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const generateInsightsMutation = useMutation({
+    mutationFn: async ({
+      resume,
+      jobDescription,
+    }: {
+      resume: File;
+      jobDescription: string;
+    }) => {
+      const formData = new FormData();
+      formData.append("resume", resume);
+      formData.append("jobDescription", jobDescription);
+
+      const response = await fetch("/api/generate-insights", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate insights");
+      }
+
+      return response.json() as Promise<APIResponse>;
+    },
+    onSuccess: (data) => {
+      if (data.insights) {
+        toast.success("Insights generated successfully");
+        setInsights(data.insights);
+      }
+    },
+    onError: () => {
+      toast.error("Error generating insights");
+    },
+  });
+
+  const generateCoverLetterMutation = useMutation({
+    mutationFn: async ({
+      resume,
+      jobDescription,
+    }: {
+      resume: File;
+      jobDescription: string;
+    }) => {
+      const formData = new FormData();
+      formData.append("resume", resume);
+      formData.append("jobDescription", jobDescription);
+
+      const response = await fetch("/api/generate-cover-letter", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        toast.error("Failed to generate cover letter");
+        throw new Error("Failed to generate cover letter");
+      }
+
+      return response.json() as Promise<APIResponse>;
+    },
+    onSuccess: (data) => {
+      if (data.coverLetter) {
+        toast.success("Cover letter generated successfully");
+        setCoverLetter(data.coverLetter);
+      }
+    },
+    onError: () => {
+      toast.error("Error generating cover letter");
+    },
+  });
+
+  const exportCoverLetterMutation = useMutation({
+    mutationFn: async (content: string) => {
+      const response = await fetch("/api/export-document", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to export cover letter");
+      }
+
+      return response.blob();
+    },
+    onSuccess: (blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "cover-letter.docx";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      toast.success("Cover letter exported successfully");
+    },
+    onError: () => {
+      toast.error("Error exporting cover letter");
+    },
+  });
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setResumeFile(file);
+    }
+  };
+
+  const handleGenerateInsights = () => {
+    if (!resumeFile || !jobDescription.trim()) return;
+    setInsights("");
+    generateInsightsMutation.mutate({ resume: resumeFile, jobDescription });
+  };
+
+  const handleGenerateCoverLetter = () => {
+    if (!resumeFile || !jobDescription.trim()) return;
+    setCoverLetter("");
+    generateCoverLetterMutation.mutate({ resume: resumeFile, jobDescription });
+  };
+
+  const handleExportCoverLetter = () => {
+    if (!coverLetter) return;
+    exportCoverLetterMutation.mutate(coverLetter);
+  };
+
+  const isFormValid = resumeFile && jobDescription.trim();
+  const isGeneratingInsights = generateInsightsMutation.isPending;
+  const isGeneratingCoverLetter = generateCoverLetterMutation.isPending;
+  const isExporting = exportCoverLetterMutation.isPending;
+
   return (
     <div
-      className={`${geistSans.className} ${geistMono.className} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/pages/index.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      className={`min-h-screen bg-background text-foreground ${geistSans.variable} font-[family-name:var(--font-geist-sans)]`}>
+      <div className="aurora-background"></div>
+      <div className="relative z-10 container mx-auto px-4 py-8 max-w-6xl">
+        <header className="text-center mb-6 lg:mb-8 pb-8 border-b border-white/10">
+          <h1 className="text-5xl font-bold mb-4 tracking-tighter bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+            Hunt Assistant
+          </h1>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Your personal AI-powered job hunting co-pilot.
+          </p>
+        </header>
+
+        <main className="max-w-4xl mx-auto pt-8">
+          {/* Input Section */}
+          <div className="space-y-6 mb-6 lg:mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-card/50 backdrop-blur-lg h-full rounded-xl border border-white/20 p-6 shadow-lg flex flex-col">
+              <h2 className="text-xl font-semibold mb-4">1. Upload resume</h2>
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="flex-1 min-h-[180px] border-2 border-dashed border-white/20 rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 hover:bg-white/5 transition-colors group flex flex-col items-center justify-center">
+                <div className="mx-auto w-12 h-12 mb-4 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <svg
+                    className="w-6 h-6 text-primary"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                    />
+                  </svg>
+                </div>
+                {resumeFile ? (
+                  <div>
+                    <p className="text-sm font-medium text-foreground">
+                      {resumeFile.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Click to change file
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-sm font-medium text-foreground mb-1">
+                      Click to upload resume
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      PDF or DOCX format
+                    </p>
+                  </div>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.docx"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </div>
+
+            <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg flex flex-col">
+              <h2 className="text-xl font-semibold mb-4">2. Job description</h2>
+              <textarea
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
+                placeholder="Paste the job description here..."
+                className="w-full flex-1 min-h-[180px] p-4 bg-background/80 border border-white/20 rounded-lg resize-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors outline-none"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mb-6 lg:mb-8">
+            <AppButton
+              onClick={handleGenerateInsights}
+              disabled={
+                !isFormValid || isGeneratingInsights || isGeneratingCoverLetter
+              }
+              className="bg-secondary text-secondary-foreground">
+              {isGeneratingInsights ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                "Get Insights"
+              )}
+            </AppButton>
+
+            <AppButton
+              onClick={handleGenerateCoverLetter}
+              disabled={
+                !isFormValid || isGeneratingCoverLetter || isGeneratingInsights
+              }>
+              {isGeneratingCoverLetter ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Writing...
+                </>
+              ) : (
+                "Generate Cover Letter"
+              )}
+            </AppButton>
+          </div>
+
+          {/* Separator */}
+          <div className="relative mb-6 lg:mb-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/20"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-background text-muted-foreground">
+                Generated Content
+              </span>
+            </div>
+          </div>
+
+          {/* Results Section */}
+
+          <div className="space-y-6 pb-8">
+            {(isGeneratingInsights || isGeneratingCoverLetter) && (
+              <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg animate-pulse">
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                    <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
+                  </div>
+                  <h3 className="text-lg font-medium mb-2">Generating...</h3>
+                  <p className="text-muted-foreground text-sm">
+                    The AI is working its magic. This might take a moment.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {insights && (
+              <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg">
+                <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+                  <div className="w-2.5 h-2.5 bg-secondary rounded-full shadow-lg shadow-secondary/50"></div>
+                  Job fit analysis
+                </h3>
+                <div
+                  className="markdown max-w-none text-foreground/80 leading-relaxed whitespace-pre-wrap"
+                  dangerouslySetInnerHTML={{ __html: insights }}
+                />
+              </div>
+            )}
+
+            {coverLetter && (
+              <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold flex items-center gap-3">
+                    <div className="w-2.5 h-2.5 bg-primary rounded-full shadow-lg shadow-primary/50"></div>
+                    Cover letter
+                  </h3>
+                  <AppButton
+                    onClick={handleExportCoverLetter}
+                    disabled={isExporting}
+                    variant="outline"
+                    size="sm"
+                    className="ml-4">
+                    {isExporting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Downloading...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4" />
+                        Download
+                      </>
+                    )}
+                  </AppButton>
+                </div>
+                <div className="prose prose-sm max-w-none text-foreground/80 leading-relaxed whitespace-pre-wrap">
+                  {coverLetter}
+                </div>
+              </div>
+            )}
+
+            {!insights &&
+              !coverLetter &&
+              !isGeneratingInsights &&
+              !isGeneratingCoverLetter && (
+                <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg">
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                      <FileText className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-medium mb-2">No results yet</h3>
+                    <p className="text-muted-foreground text-sm">
+                      Generated insights and cover letters will appear here.
+                    </p>
+                  </div>
+                </div>
+              )}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
