@@ -157,7 +157,6 @@ export default function Home() {
   return (
     <div
       className={`min-h-screen bg-background text-foreground ${geistSans.variable} font-[family-name:var(--font-geist-sans)]`}>
-      <div className="aurora-background"></div>
       <div className="flex flex-col gap-6 lg:gap-8 relative z-10 container mx-auto px-4 py-8 max-w-6xl">
         <header className="text-center pb-8 border-b border-white/10">
           <h1 className="text-5xl font-bold mb-4 tracking-tighter bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
