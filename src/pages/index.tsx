@@ -4,6 +4,7 @@ import AppButton from "@/components/ui/app-button";
 import { FileText, Loader2, Download } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import Footer from "@/components/ui/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -157,8 +158,8 @@ export default function Home() {
     <div
       className={`min-h-screen bg-background text-foreground ${geistSans.variable} font-[family-name:var(--font-geist-sans)]`}>
       <div className="aurora-background"></div>
-      <div className="relative z-10 container mx-auto px-4 py-8 max-w-6xl">
-        <header className="text-center mb-6 lg:mb-8 pb-8 border-b border-white/10">
+      <div className="flex flex-col gap-6 lg:gap-8 relative z-10 container mx-auto px-4 py-8 max-w-6xl">
+        <header className="text-center pb-8 border-b border-white/10">
           <h1 className="text-5xl font-bold mb-4 tracking-tighter bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
             Hunt Assistant
           </h1>
@@ -167,7 +168,7 @@ export default function Home() {
           </p>
         </header>
 
-        <main className="max-w-4xl mx-auto pt-8">
+        <main className="pt-8">
           {/* Input Section */}
           <div className="space-y-6 mb-6 lg:mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-card/50 backdrop-blur-lg h-full rounded-xl border border-white/20 p-6 shadow-lg flex flex-col">
@@ -353,6 +354,7 @@ export default function Home() {
               )}
           </div>
         </main>
+        <Footer />
       </div>
     </div>
   );
