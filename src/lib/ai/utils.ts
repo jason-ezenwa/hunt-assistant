@@ -14,6 +14,7 @@ export const constructInsightsMessages = (
           You are a job fit analysis expert and the user is a job seeker. You are given a resume and a job description.
           You need to analyze the resume and job description and provide insights into the candidate's fit for the role.
           Analyze strengths, weaknesses, and alignment with the job requirements.
+          The insights generated should be in markdown.
           The user is looking for a job that is a good fit for them.
           Speak in the first person and use the word "you" instead of "the candidate" and "your" instead of "the candidate's".
           Be concise and to the point.
@@ -48,6 +49,7 @@ export const constructCoverLetterMessages = (
       content: `
         You are a professional cover letters writer. You are given a resume and a job description.
         You need to generate a professional cover letter based on the provided resume and job description. The cover letter should be tailored to the job role and highlight the candidate's most relevant skills and experiences.
+        The cover letter generated should be in markdown.
         You are speaking to the hiring manager.
         No need to start by explaining its a cover letter.
         No need to say here is a cover letter.

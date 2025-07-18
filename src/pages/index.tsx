@@ -5,6 +5,7 @@ import { FileText, Loader2, Download } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import Footer from "@/components/ui/footer";
+import ReactMarkdown from "react-markdown";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -154,6 +155,8 @@ export default function Home() {
   const isGeneratingCoverLetter = generateCoverLetterMutation.isPending;
   const isExporting = exportCoverLetterMutation.isPending;
 
+  console.log({ insights, coverLetter });
+
   return (
     <div
       className={`min-h-screen bg-background text-foreground ${geistSans.variable} font-[family-name:var(--font-geist-sans)]`}>
@@ -296,10 +299,48 @@ export default function Home() {
                   <div className="w-2.5 h-2.5 bg-secondary rounded-full shadow-lg shadow-secondary/50"></div>
                   Job fit analysis
                 </h3>
-                <div
-                  className="markdown max-w-none text-foreground/80 leading-relaxed whitespace-pre-wrap"
-                  dangerouslySetInnerHTML={{ __html: insights }}
-                />
+                <ReactMarkdown
+                  components={{
+                    h1: ({ children }) => (
+                      <h1 className="text-2xl font-bold mb-4 text-foreground">
+                        {children}
+                      </h1>
+                    ),
+                    h2: ({ children }) => (
+                      <h2 className="text-xl font-semibold mb-3 text-foreground">
+                        {children}
+                      </h2>
+                    ),
+                    h3: ({ children }) => (
+                      <h3 className="text-lg font-medium mb-2 text-foreground">
+                        {children}
+                      </h3>
+                    ),
+                    p: ({ children }) => (
+                      <p className="mb-4 text-foreground/80 leading-relaxed">
+                        {children}
+                      </p>
+                    ),
+                    strong: ({ children }) => (
+                      <strong className="font-semibold text-foreground">
+                        {children}
+                      </strong>
+                    ),
+                    em: ({ children }) => (
+                      <em className="italic text-foreground/90">{children}</em>
+                    ),
+                    ul: ({ children }) => (
+                      <ul className="pl-4 list-disc mb-4">{children}</ul>
+                    ),
+                    ol: ({ children }) => (
+                      <ol className="pl-4 list-decimal mb-4">{children}</ol>
+                    ),
+                    li: ({ children }) => (
+                      <li className="text-foreground/80">{children}</li>
+                    ),
+                  }}>
+                  {insights}
+                </ReactMarkdown>
               </div>
             )}
 
@@ -329,8 +370,51 @@ export default function Home() {
                     )}
                   </AppButton>
                 </div>
-                <div className="prose prose-sm max-w-none text-foreground/80 leading-relaxed whitespace-pre-wrap">
-                  {coverLetter}
+                <div className="prose prose-sm max-w-none text-foreground/80 leading-relaxed">
+                  <ReactMarkdown
+                    components={{
+                      h1: ({ children }) => (
+                        <h1 className="text-2xl font-bold mb-4 text-foreground">
+                          {children}
+                        </h1>
+                      ),
+                      h2: ({ children }) => (
+                        <h2 className="text-xl font-semibold mb-3 text-foreground">
+                          {children}
+                        </h2>
+                      ),
+                      h3: ({ children }) => (
+                        <h3 className="text-lg font-medium mb-2 text-foreground">
+                          {children}
+                        </h3>
+                      ),
+                      p: ({ children }) => (
+                        <p className="mb-4 text-foreground/80 leading-relaxed">
+                          {children}
+                        </p>
+                      ),
+                      strong: ({ children }) => (
+                        <strong className="font-semibold text-foreground">
+                          {children}
+                        </strong>
+                      ),
+                      em: ({ children }) => (
+                        <em className="italic text-foreground/90">
+                          {children}
+                        </em>
+                      ),
+                      ul: ({ children }) => (
+                        <ul className="pl-4 list-disc mb-4">{children}</ul>
+                      ),
+                      ol: ({ children }) => (
+                        <ol className="pl-4 list-decimal mb-4">{children}</ol>
+                      ),
+                      li: ({ children }) => (
+                        <li className="text-foreground/80">{children}</li>
+                      ),
+                    }}>
+                    {coverLetter}
+                  </ReactMarkdown>
                 </div>
               </div>
             )}
