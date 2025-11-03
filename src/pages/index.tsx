@@ -1,441 +1,132 @@
-import { useState, useRef } from "react";
-import { Geist } from "next/font/google";
-import AppButton from "@/components/ui/app-button";
-import { FileText, Loader2, Download } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import Footer from "@/components/ui/footer";
-import ReactMarkdown from "react-markdown";
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { Geist } from 'next/font/google';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import Footer from '@/components/ui/footer';
+import { useSession } from '@/lib/hooks/use-session';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
-interface APIResponse {
-  insights?: string;
-  coverLetter?: string;
-  error?: string;
-}
-
 export default function Home() {
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [jobDescription, setJobDescription] = useState("");
-  const [insights, setInsights] = useState<string>("");
-  const [coverLetter, setCoverLetter] = useState<string>("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { data: session, isPending } = useSession();
+  const router = useRouter();
 
-  const generateInsightsMutation = useMutation({
-    mutationFn: async ({
-      resume,
-      jobDescription,
-    }: {
-      resume: File;
-      jobDescription: string;
-    }) => {
-      const formData = new FormData();
-      formData.append("resume", resume);
-      formData.append("jobDescription", jobDescription);
-
-      const response = await fetch("/api/generate-insights", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate insights");
-      }
-
-      return response.json() as Promise<APIResponse>;
-    },
-    onSuccess: (data) => {
-      if (data.insights) {
-        toast.success("Insights generated successfully");
-        setInsights(data.insights);
-      }
-    },
-    onError: () => {
-      toast.error("Error generating insights");
-    },
-  });
-
-  const generateCoverLetterMutation = useMutation({
-    mutationFn: async ({
-      resume,
-      jobDescription,
-    }: {
-      resume: File;
-      jobDescription: string;
-    }) => {
-      const formData = new FormData();
-      formData.append("resume", resume);
-      formData.append("jobDescription", jobDescription);
-
-      const response = await fetch("/api/generate-cover-letter", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        toast.error("Failed to generate cover letter");
-        throw new Error("Failed to generate cover letter");
-      }
-
-      return response.json() as Promise<APIResponse>;
-    },
-    onSuccess: (data) => {
-      if (data.coverLetter) {
-        toast.success("Cover letter generated successfully");
-        setCoverLetter(data.coverLetter);
-      }
-    },
-    onError: () => {
-      toast.error("Error generating cover letter");
-    },
-  });
-
-  const exportCoverLetterMutation = useMutation({
-    mutationFn: async (content: string) => {
-      const response = await fetch("/api/export-document", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to export cover letter");
-      }
-
-      return response.blob();
-    },
-    onSuccess: (blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "cover-letter.docx";
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      toast.success("Cover letter exported successfully");
-    },
-    onError: () => {
-      toast.error("Error exporting cover letter");
-    },
-  });
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setResumeFile(file);
+  useEffect(() => {
+    if (!isPending && session) {
+      router.push('/dashboard');
     }
-  };
+  }, [session, isPending, router]);
 
-  const handleGenerateInsights = () => {
-    if (!resumeFile || !jobDescription.trim()) return;
-    setInsights("");
-    generateInsightsMutation.mutate({ resume: resumeFile, jobDescription });
-  };
-
-  const handleGenerateCoverLetter = () => {
-    if (!resumeFile || !jobDescription.trim()) return;
-    setCoverLetter("");
-    generateCoverLetterMutation.mutate({ resume: resumeFile, jobDescription });
-  };
-
-  const handleExportCoverLetter = () => {
-    if (!coverLetter) return;
-    exportCoverLetterMutation.mutate(coverLetter);
-  };
-
-  const isFormValid = resumeFile && jobDescription.trim();
-  const isGeneratingInsights = generateInsightsMutation.isPending;
-  const isGeneratingCoverLetter = generateCoverLetterMutation.isPending;
-  const isExporting = exportCoverLetterMutation.isPending;
-
-  console.log({ insights, coverLetter });
+  if (isPending) {
+    return (
+      <div className={`min-h-screen bg-background text-foreground ${geistSans.variable} font-[family-name:var(--font-geist-sans)] flex items-center justify-center`}>
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
 
   return (
-    <div
-      className={`min-h-screen bg-background text-foreground ${geistSans.variable} font-[family-name:var(--font-geist-sans)]`}>
+    <div className={`min-h-screen bg-background text-foreground ${geistSans.variable} font-[family-name:var(--font-geist-sans)]`}>
       <div className="flex flex-col gap-6 lg:gap-8 relative z-10 container mx-auto px-4 py-8 max-w-6xl">
-        <header className="text-center pb-8 border-b border-white/10">
-          <h1 className="text-5xl font-bold mb-4 tracking-tighter bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-            Hunt Assistant
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Your personal AI-powered job hunting co-pilot.
-          </p>
-        </header>
+        <main className="flex-1">
+          {/* Hero Section */}
+          <section className="text-center py-20 px-4">
+            <h1 className="leading-tight text-5xl font-bold mb-4 tracking-tighter bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+              Hunt Assistant
+            </h1>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
+              Your personal AI-powered job hunting co-pilot.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link href="/auth/sign-up">
+                <Button variant="secondary" className="px-8 py-3 text-lg font-medium">
+                  Get started
+                </Button>
+              </Link>
+              <Link href="/playground">
+                <Button className="px-8 py-3 text-lg font-medium">
+                  Try demo
+                </Button>
+              </Link>
+            </div>
+          </section>
 
-        <main className="pt-8">
-          {/* Input Section */}
-          <div className="space-y-6 mb-6 lg:mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-card/50 backdrop-blur-lg h-full rounded-xl border border-white/20 p-6 shadow-lg flex flex-col">
-              <h2 className="text-xl font-semibold mb-4">1. Upload resume</h2>
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="flex-1 min-h-[180px] border-2 border-dashed border-white/20 rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 hover:bg-white/5 transition-colors group flex flex-col items-center justify-center">
-                <div className="mx-auto w-12 h-12 mb-4 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <svg
-                    className="w-6 h-6 text-primary"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                    />
-                  </svg>
+          {/* Features Section */}
+          <section className="py-20 px-4 bg-card/30">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                Everything you need for job applications
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl transition-shadow">
+                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">Resume analysis</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Upload your resume and get detailed insights on how well it matches each job opportunity.
+                  </p>
                 </div>
-                {resumeFile ? (
-                  <div>
-                    <p className="text-sm font-medium text-foreground">
-                      {resumeFile.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Click to change file
-                    </p>
+
+                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl transition-shadow">
+                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
                   </div>
-                ) : (
-                  <div>
-                    <p className="text-sm font-medium text-foreground mb-1">
-                      Click to upload resume
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      PDF or DOCX format
-                    </p>
+                  <h3 className="text-xl font-semibold mb-3">Tailored cover letters</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Generate personalized cover letters that highlight your most relevant skills and experiences.
+                  </p>
+                </div>
+
+                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl transition-shadow">
+                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
                   </div>
-                )}
-              </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,.docx"
-                onChange={handleFileUpload}
-                className="hidden"
-              />
-            </div>
+                  <h3 className="text-xl font-semibold mb-3">AI-powered insights</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Get intelligent analysis of job requirements and how your background aligns with them.
+                  </p>
+                </div>
 
-            <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg flex flex-col">
-              <h2 className="text-xl font-semibold mb-4">2. Job description</h2>
-              <textarea
-                value={jobDescription}
-                onChange={(e) => setJobDescription(e.target.value)}
-                placeholder="Paste the job description here..."
-                className="w-full flex-1 min-h-[180px] p-4 bg-background/80 border border-white/20 rounded-lg resize-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors outline-none"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mb-6 lg:mb-8">
-            <AppButton
-              onClick={handleGenerateInsights}
-              disabled={
-                !isFormValid || isGeneratingInsights || isGeneratingCoverLetter
-              }
-              className="bg-secondary text-secondary-foreground">
-              {isGeneratingInsights ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Analyzing...
-                </>
-              ) : (
-                "Get Insights"
-              )}
-            </AppButton>
-
-            <AppButton
-              onClick={handleGenerateCoverLetter}
-              disabled={
-                !isFormValid || isGeneratingCoverLetter || isGeneratingInsights
-              }>
-              {isGeneratingCoverLetter ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Writing...
-                </>
-              ) : (
-                "Generate Cover Letter"
-              )}
-            </AppButton>
-          </div>
-
-          {/* Separator */}
-          <div className="relative mb-6 lg:mb-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/20"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-background text-muted-foreground">
-                Generated Content
-              </span>
-            </div>
-          </div>
-
-          {/* Results Section */}
-
-          <div className="space-y-6 pb-8">
-            {(isGeneratingInsights || isGeneratingCoverLetter) && (
-              <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg animate-pulse">
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/50 flex items-center justify-center">
-                    <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
+                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl transition-shadow">
+                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                    </svg>
                   </div>
-                  <h3 className="text-lg font-medium mb-2">Generating...</h3>
-                  <p className="text-muted-foreground text-sm">
-                    The AI is working its magic. This might take a moment.
+                  <h3 className="text-xl font-semibold mb-3">Save & reuse</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Store all your applications and generated content for easy access and future reference.
                   </p>
                 </div>
               </div>
-            )}
+            </div>
+          </section>
 
-            {insights && (
-              <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg">
-                <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
-                  <div className="w-2.5 h-2.5 bg-secondary rounded-full shadow-lg shadow-secondary/50"></div>
-                  Job fit analysis
-                </h3>
-                <ReactMarkdown
-                  components={{
-                    h1: ({ children }) => (
-                      <h1 className="text-2xl font-bold mb-4 text-foreground">
-                        {children}
-                      </h1>
-                    ),
-                    h2: ({ children }) => (
-                      <h2 className="text-xl font-semibold mb-3 text-foreground">
-                        {children}
-                      </h2>
-                    ),
-                    h3: ({ children }) => (
-                      <h3 className="text-lg font-medium mb-2 text-foreground">
-                        {children}
-                      </h3>
-                    ),
-                    p: ({ children }) => (
-                      <p className="mb-4 text-foreground/80 leading-relaxed">
-                        {children}
-                      </p>
-                    ),
-                    strong: ({ children }) => (
-                      <strong className="font-semibold text-foreground">
-                        {children}
-                      </strong>
-                    ),
-                    em: ({ children }) => (
-                      <em className="italic text-foreground/90">{children}</em>
-                    ),
-                    ul: ({ children }) => (
-                      <ul className="pl-4 list-disc mb-4">{children}</ul>
-                    ),
-                    ol: ({ children }) => (
-                      <ol className="pl-4 list-decimal mb-4">{children}</ol>
-                    ),
-                    li: ({ children }) => (
-                      <li className="text-foreground/80">{children}</li>
-                    ),
-                  }}>
-                  {insights}
-                </ReactMarkdown>
-              </div>
-            )}
-
-            {coverLetter && (
-              <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-semibold flex items-center gap-3">
-                    <div className="w-2.5 h-2.5 bg-primary rounded-full shadow-lg shadow-primary/50"></div>
-                    Cover letter
-                  </h3>
-                  <AppButton
-                    onClick={handleExportCoverLetter}
-                    disabled={isExporting}
-                    variant="outline"
-                    size="sm"
-                    className="ml-4">
-                    {isExporting ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Downloading...
-                      </>
-                    ) : (
-                      <>
-                        <Download className="w-4 h-4" />
-                        Download
-                      </>
-                    )}
-                  </AppButton>
-                </div>
-                <div className="prose prose-sm max-w-none text-foreground/80 leading-relaxed">
-                  <ReactMarkdown
-                    components={{
-                      h1: ({ children }) => (
-                        <h1 className="text-2xl font-bold mb-4 text-foreground">
-                          {children}
-                        </h1>
-                      ),
-                      h2: ({ children }) => (
-                        <h2 className="text-xl font-semibold mb-3 text-foreground">
-                          {children}
-                        </h2>
-                      ),
-                      h3: ({ children }) => (
-                        <h3 className="text-lg font-medium mb-2 text-foreground">
-                          {children}
-                        </h3>
-                      ),
-                      p: ({ children }) => (
-                        <p className="mb-4 text-foreground/80 leading-relaxed">
-                          {children}
-                        </p>
-                      ),
-                      strong: ({ children }) => (
-                        <strong className="font-semibold text-foreground">
-                          {children}
-                        </strong>
-                      ),
-                      em: ({ children }) => (
-                        <em className="italic text-foreground/90">
-                          {children}
-                        </em>
-                      ),
-                      ul: ({ children }) => (
-                        <ul className="pl-4 list-disc mb-4">{children}</ul>
-                      ),
-                      ol: ({ children }) => (
-                        <ol className="pl-4 list-decimal mb-4">{children}</ol>
-                      ),
-                      li: ({ children }) => (
-                        <li className="text-foreground/80">{children}</li>
-                      ),
-                    }}>
-                    {coverLetter}
-                  </ReactMarkdown>
-                </div>
-              </div>
-            )}
-
-            {!insights &&
-              !coverLetter &&
-              !isGeneratingInsights &&
-              !isGeneratingCoverLetter && (
-                <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg">
-                  <div className="text-center py-8">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/50 flex items-center justify-center">
-                      <FileText className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="text-lg font-medium mb-2">No results yet</h3>
-                    <p className="text-muted-foreground text-sm">
-                      Generated insights and cover letters will appear here.
-                    </p>
-                  </div>
-                </div>
-              )}
-          </div>
+          {/* CTA Section */}
+          <section className="py-20 px-4 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Ready to supercharge your job search?
+            </h2>
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Join thousands of job seekers who are landing better opportunities with personalized insights and professional cover letters.
+            </p>
+            <Link href="/auth/sign-up">
+              <Button className="px-8 py-3 text-lg font-medium">
+                Start your journey
+              </Button>
+            </Link>
+          </section>
         </main>
         <Footer />
       </div>
