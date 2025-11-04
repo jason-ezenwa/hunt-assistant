@@ -69,7 +69,7 @@ export default function NewJourney() {
     },
     onSuccess: (data) => {
       toast.success("Journey created successfully");
-      router.push(`/journey/${data._id}`);
+      router.push(`/journeys/${data._id}`);
     },
     onError: (error) => {
       console.error("onError error: Failed to create journey:", error);

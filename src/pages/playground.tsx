@@ -198,7 +198,7 @@ export default function Playground() {
             <div className="max-w-6xl mx-auto">
               <div className="space-y-6 mb-6 lg:mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-card/50 backdrop-blur-lg h-full rounded-xl border border-white/20 p-6 shadow-lg flex flex-col">
-                  <h2 className="text-xl font-semibold mb-4">
+                  <h2 className="text-xl font-semibold mb-4 text-left">
                     1. Upload resume
                   </h2>
                   <div
@@ -248,7 +248,7 @@ export default function Playground() {
                 </div>
 
                 <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg flex flex-col">
-                  <h2 className="text-xl font-semibold mb-4">
+                  <h2 className="text-xl font-semibold mb-4 text-left">
                     2. Job description
                   </h2>
                   <textarea

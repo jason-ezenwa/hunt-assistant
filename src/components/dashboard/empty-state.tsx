@@ -24,7 +24,7 @@ export default function EmptyState() {
         Start your job hunting journey by creating your first application.
         Upload your resume and get personalized insights.
       </p>
-      <Link href="/journey/new">
+      <Link href="/journeys/new">
         <Button>
           <Plus className="w-4 h-4 mr-2" />
           Start your first journey

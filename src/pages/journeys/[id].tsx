@@ -105,15 +105,15 @@ export default function JourneyDetail() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
-        return "bg-green-500/10 text-green-700 border-green-500/20";
+        return { bg: "#CBF4C9", text: "#0E6245", border: "#CBF4C9" };
       case "in-progress":
-        return "bg-orange-600/15 text-orange-800 border-orange-600/25";
+        return { bg: "#F8E5BA", text: "#9C3F0F", border: "#F8E5BA" };
       case "applied":
-        return "bg-primary/10 text-primary border-primary/20";
+        return { bg: "#FFE5E5", text: "#C53030", border: "#FFE5E5" };
       case "archived":
-        return "bg-muted text-muted-foreground border-muted-foreground/20";
+        return { bg: "#F3F4F6", text: "#6B7280", border: "#F3F4F6" };
       default:
-        return "bg-yellow-500/10 text-yellow-700 border-yellow-500/20";
+        return { bg: "#FEF3C7", text: "#92400E", border: "#FEF3C7" };
     }
   };
 
@@ -159,7 +159,7 @@ export default function JourneyDetail() {
               href="/dashboard"
               className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
+              Back to dashboard
             </Link>
 
             <div className="flex items-start justify-between mb-4">
@@ -172,7 +172,12 @@ export default function JourneyDetail() {
                 </p>
               </div>
               <Badge
-                className={`border ${getStatusColor(journey.status)} text-sm`}>
+                className="text-sm border"
+                style={{
+                  backgroundColor: getStatusColor(journey.status).bg,
+                  color: getStatusColor(journey.status).text,
+                  borderColor: getStatusColor(journey.status).border,
+                }}>
                 {journey.status.replace("-", " ")}
               </Badge>
             </div>
