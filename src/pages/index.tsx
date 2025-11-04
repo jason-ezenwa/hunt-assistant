@@ -38,7 +38,7 @@ export default function Home() {
               <Link href="/playground">
                 <Button
                   variant="secondary"
-                  className="px-8 py-3 text-lg font-medium">
+                  className="px-8 py-3 text-lg font-medium hover:bg-primary/10">
                   Try demo
                 </Button>
               </Link>

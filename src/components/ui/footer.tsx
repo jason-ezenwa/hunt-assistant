@@ -31,7 +31,7 @@ const Footer = () => {
           </p>
           <div className="flex items-center gap-4">
             <a
-              href="https://twitter.com/turntupjason"
+              href="https://twitter.com/turntupjasonn"
               className="text-muted-foreground hover:text-primary transition-colors"
               target="_blank"
               rel="noopener noreferrer">

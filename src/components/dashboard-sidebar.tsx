@@ -3,13 +3,21 @@ import { usePathname } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, FileText, Settings, User } from "lucide-react";
+import {
+  LayoutDashboard,
+  FileText,
+  Settings,
+  User,
+  LogOut,
+} from "lucide-react";
 import Image from "next/image";
+import { signOut } from "@/lib/auth/auth-client";
 
 type MenuItem = {
   title: string;
@@ -50,9 +58,9 @@ export function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar>
+    <Sidebar className="py-1">
       <SidebarHeader className="p-0">
-        <div className="flex items-center gap-1 py-6 px-2">
+        <div className="flex items-center gap-1 py-4 px-2">
           <Image
             src="/favicon.svg"
             alt="Hunt Assistant"
@@ -101,6 +109,21 @@ export function DashboardSidebar() {
           </SidebarMenu>
         </div>
       </SidebarContent>
+
+      <SidebarFooter className="p-0">
+        <SidebarMenu className="px-2">
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <button
+                onClick={() => signOut()}
+                className="flex w-full items-center gap-2 px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors">
+                <LogOut className="h-4 w-4" />
+                <span>Log out</span>
+              </button>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
