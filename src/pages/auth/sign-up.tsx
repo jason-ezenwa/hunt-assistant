@@ -82,14 +82,6 @@ export default function SignUp() {
         </p>
       </div>
 
-      <div className="flex items-center mb-4 md:mb-6">
-        <div className="flex-1 h-px bg-white/20"></div>
-        <span className="px-2 md:px-3 text-muted-foreground text-xs md:text-sm font-normal">
-          OR
-        </span>
-        <div className="flex-1 h-px bg-white/20"></div>
-      </div>
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
