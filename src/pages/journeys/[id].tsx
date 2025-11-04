@@ -1,12 +1,30 @@
 import { useRouter } from "next/router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import AuthenticationGuard from "@/components/guards/authentication-guard";
 import DashboardLayout from "@/components/layouts/dashboard-layout";
 import { Button } from "@/components/ui/button";
 import { useJourney } from "@/lib/hooks/use-journeys";
+import {
+  useUpdateJourney,
+  useDeleteJourney,
+} from "@/lib/hooks/use-journey-mutations";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ArrowLeft, RefreshCw, Download, FileText } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  ArrowLeft,
+  RefreshCw,
+  Download,
+  FileText,
+  CheckCircle,
+  Trash2,
+  AlertTriangle,
+} from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 
@@ -14,7 +32,10 @@ export default function JourneyDetail() {
   const router = useRouter();
   const { id } = router.query;
   const { data: journey, isLoading } = useJourney(id as string);
+  const [isDeletePopoverOpen, setIsDeletePopoverOpen] = useState(false);
   const queryClient = useQueryClient();
+  const updateJourneyMutation = useUpdateJourney();
+  const deleteJourneyMutation = useDeleteJourney();
 
   const generateInsightsMutation = useMutation({
     mutationFn: async (journeyId: string) => {
@@ -102,6 +123,50 @@ export default function JourneyDetail() {
     }
   };
 
+  const handleMarkAsApplied = () => {
+    if (!journey) return;
+    updateJourneyMutation.mutate(
+      {
+        id: journey._id,
+        data: { status: "applied" },
+      },
+      {
+        onSuccess: () => {
+          toast.success("Job marked as applied");
+          queryClient.invalidateQueries({ queryKey: ["journey", journey._id] });
+        },
+        onError: (error) => {
+          console.error("Error marking job as applied:", error);
+          toast.error("Failed to mark job as applied");
+        },
+      }
+    );
+  };
+
+  const handleDeleteJourney = () => {
+    setIsDeletePopoverOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!journey) return;
+    deleteJourneyMutation.mutate(journey._id, {
+      onSuccess: () => {
+        toast.success("Journey deleted successfully");
+        router.push("/journeys");
+        setIsDeletePopoverOpen(false);
+      },
+      onError: (error) => {
+        console.error("Error deleting journey:", error);
+        toast.error("Failed to delete journey");
+        setIsDeletePopoverOpen(false);
+      },
+    });
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeletePopoverOpen(false);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
@@ -140,8 +205,8 @@ export default function JourneyDetail() {
               The application you&apos;re looking for doesn&apos;t exist or you
               don&apos;t have permission to view it.
             </p>
-            <Link href="/dashboard">
-              <Button>Back to Dashboard</Button>
+            <Link href="/journeys">
+              <Button>Back to journeys</Button>
             </Link>
           </div>
         </DashboardLayout>
@@ -156,10 +221,10 @@ export default function JourneyDetail() {
           {/* Header */}
           <div className="mb-8">
             <Link
-              href="/dashboard"
+              href="/journeys"
               className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to dashboard
+              Back to journeys
             </Link>
 
             <div className="flex items-start justify-between mb-4">
@@ -167,19 +232,115 @@ export default function JourneyDetail() {
                 <h1 className="text-3xl font-bold mb-2">
                   {journey.companyName}
                 </h1>
-                <p className="text-xl text-muted-foreground">
+                <p className="text-xl text-muted-foreground mb-3">
                   {journey.jobTitle}
                 </p>
+                <Badge
+                  className="text-sm border"
+                  style={{
+                    backgroundColor: getStatusColor(journey.status).bg,
+                    color: getStatusColor(journey.status).text,
+                    borderColor: getStatusColor(journey.status).border,
+                  }}>
+                  {journey.status.replace("-", " ")}
+                </Badge>
               </div>
-              <Badge
-                className="text-sm border"
-                style={{
-                  backgroundColor: getStatusColor(journey.status).bg,
-                  color: getStatusColor(journey.status).text,
-                  borderColor: getStatusColor(journey.status).border,
-                }}>
-                {journey.status.replace("-", " ")}
-              </Badge>
+              <div className="flex items-center gap-3">
+                {journey.status !== "applied" && (
+                  <Button
+                    onClick={handleMarkAsApplied}
+                    size="sm"
+                    disabled={
+                      generateCoverLetterMutation.isPending ||
+                      generateInsightsMutation.isPending ||
+                      updateJourneyMutation.isPending ||
+                      deleteJourneyMutation.isPending
+                    }
+                    className="h-auto py-2 px-4">
+                    {updateJourneyMutation.isPending ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                        Updating...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Mark as applied
+                      </>
+                    )}
+                  </Button>
+                )}
+                <Popover
+                  open={isDeletePopoverOpen}
+                  onOpenChange={setIsDeletePopoverOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-red-200 text-red-700 hover:bg-red-50"
+                      disabled={deleteJourneyMutation.isPending}>
+                      {deleteJourneyMutation.isPending ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                          Deleting...
+                        </>
+                      ) : (
+                        <>
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete
+                        </>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80" align="end">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
+                          <AlertTriangle className="h-5 w-5 text-red-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">Delete journey</h4>
+                          <p className="text-sm text-muted-foreground">
+                            This action cannot be undone.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-sm">
+                          Are you sure you want to delete the journey for{" "}
+                          <span className="font-medium">
+                            {journey.companyName}
+                          </span>
+                          ?
+                        </p>
+                        <div className="flex gap-2 justify-end">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleCancelDelete}
+                            disabled={deleteJourneyMutation.isPending}>
+                            Cancel
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={handleConfirmDelete}
+                            disabled={deleteJourneyMutation.isPending}>
+                            {deleteJourneyMutation.isPending ? (
+                              <>
+                                <RefreshCw className="w-3 h-3 mr-2 animate-spin" />
+                                Deleting...
+                              </>
+                            ) : (
+                              "Delete"
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           </div>
 
@@ -189,7 +350,9 @@ export default function JourneyDetail() {
               onClick={handleGenerateInsights}
               disabled={
                 generateInsightsMutation.isPending ||
-                generateCoverLetterMutation.isPending
+                generateCoverLetterMutation.isPending ||
+                updateJourneyMutation.isPending ||
+                deleteJourneyMutation.isPending
               }
               variant="secondary"
               className="h-auto py-3">
@@ -212,7 +375,9 @@ export default function JourneyDetail() {
               onClick={handleGenerateCoverLetter}
               disabled={
                 generateCoverLetterMutation.isPending ||
-                generateInsightsMutation.isPending
+                generateInsightsMutation.isPending ||
+                updateJourneyMutation.isPending ||
+                deleteJourneyMutation.isPending
               }
               className="h-auto py-3">
               {generateCoverLetterMutation.isPending ? (

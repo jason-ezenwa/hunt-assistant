@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import {
   Form,
   FormControl,
+  FormField,
   FormItem,
   FormLabel,
   FormMessage,
@@ -113,31 +114,45 @@ export default function NewJourney() {
               {/* Company Name and Job Title Side by Side */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg">
-                  <FormItem>
-                    <FormLabel className="text-base">Company name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., Google, Microsoft, Apple"
-                        className="w-full p-4 bg-background/80 border border-white/20 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors outline-none"
-                        {...form.register("companyName")}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <FormField
+                    control={form.control}
+                    name="companyName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base">
+                          Company name
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., Google, Microsoft, Apple"
+                            className="w-full p-4 bg-background/80 border border-white/20 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors outline-none"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg">
-                  <FormItem>
-                    <FormLabel className="text-base">Job title</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., Senior Software Engineer, Product Manager"
-                        className="w-full p-4 bg-background/80 border border-white/20 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors outline-none"
-                        {...form.register("jobTitle")}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <FormField
+                    control={form.control}
+                    name="jobTitle"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base">Job title</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., Senior Software Engineer, Product Manager"
+                            className="w-full p-4 bg-background/80 border border-white/20 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors outline-none"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </div>
 
@@ -196,24 +211,39 @@ export default function NewJourney() {
 
                 {/* Job Description */}
                 <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg flex flex-col">
-                  <Label className="text-base mb-4">Job description</Label>
-                  <textarea
-                    placeholder="Paste the job description here..."
-                    className="w-full flex-1 min-h-[180px] p-4 bg-background/80 border border-white/20 rounded-lg resize-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors outline-none"
-                    {...form.register("jobDescription")}
+                  <FormField
+                    control={form.control}
+                    name="jobDescription"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel className="text-base">
+                          Job description
+                        </FormLabel>
+                        <FormControl>
+                          <textarea
+                            placeholder="Paste the job description here..."
+                            className="w-full flex-1 min-h-[180px] p-4 bg-background/80 border border-white/20 rounded-lg resize-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors outline-none"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
               </div>
 
               {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={createJourneyMutation.isPending}
-                className="w-full h-12 text-base">
-                {createJourneyMutation.isPending
-                  ? "Starting journey..."
-                  : "Start journey"}
-              </Button>
+              <div className="flex justify-center lg:justify-end">
+                <Button
+                  type="submit"
+                  disabled={createJourneyMutation.isPending}
+                  className="w-full lg:w-1/2 h-12 text-base">
+                  {createJourneyMutation.isPending
+                    ? "Starting journey..."
+                    : "Start journey"}
+                </Button>
+              </div>
             </form>
           </Form>
         </div>

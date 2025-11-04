@@ -187,7 +187,7 @@ export default function Dashboard() {
           {/* Quick Actions */}
           {!recentJourney && (
             <div className="text-center py-12">
-              <h2 className="text-xl font-semibold mb-4">Get Started</h2>
+              <h2 className="text-xl font-semibold mb-4">Get started</h2>
               <p className="text-muted-foreground mb-6">
                 Create your first journey to start getting personalized insights
                 and cover letters.

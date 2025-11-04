@@ -9,6 +9,10 @@ const mongoUri =
 const client = new MongoClient(mongoUri);
 const db = client.db("hunt-assistant");
 
+const redirectURI = process.env.NEXT_PUBLIC_BETTER_AUTH_URL
+  ? `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/dashboard`
+  : "http://localhost:3000/dashboard";
+
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
   database: mongodbAdapter(db, { client }),
@@ -19,12 +23,13 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_SSO_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_SSO_CLIENT_SECRET || "",
+      redirectURI: redirectURI,
     },
   },
   trustedOrigins: [
     "http://localhost:3000",
     "http://localhost:3001",
-    "https://hunt-assistant.vercel.app",
+    process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000",
   ],
   user: {
     modelName: "users",
