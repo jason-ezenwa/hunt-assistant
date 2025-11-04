@@ -4,7 +4,6 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Skeleton } from "@/components/ui/skeleton"
 
 const SidebarProvider = React.forwardRef<
@@ -20,8 +19,8 @@ const SidebarProvider = React.forwardRef<
       ref={ref}
       style={
         {
-          "--sidebar-width": "16rem",
-          "--sidebar-width-mobile": "18rem",
+          "--sidebar-width": "20rem",
+          "--sidebar-width-mobile": "20rem",
           ...style,
         } as React.CSSProperties
       }
@@ -38,11 +37,10 @@ SidebarProvider.displayName = "SidebarProvider"
 const Sidebar = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
-    collapsible?: "dock" | "icon" | "none"
     side?: "left" | "right"
     variant?: "sidebar" | "floating" | "inset"
   }
->(({ className, side = "left", variant = "sidebar", collapsible = "icon", ...props }, ref) => {
+>(({ className, side = "left", variant = "sidebar", ...props }, ref) => {
   return (
     <div
       ref={ref}
@@ -220,7 +218,6 @@ const SidebarMenuButton = React.forwardRef<
   React.ComponentProps<"button"> & {
     asChild?: boolean
     isActive?: boolean
-    tooltip?: string | React.ComponentProps<typeof TooltipContent>
   } & VariantProps<typeof sidebarMenuButtonVariants>
 >(
   (
@@ -229,7 +226,6 @@ const SidebarMenuButton = React.forwardRef<
       isActive = false,
       variant = "default",
       size = "default",
-      tooltip,
       className,
       ...props
     },

@@ -5,7 +5,6 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <title>Hunt Assistant - Job Search AI</title>
       </Head>
       <body className="antialiased">
         <Main />

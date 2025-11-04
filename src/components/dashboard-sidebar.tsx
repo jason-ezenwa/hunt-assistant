@@ -8,13 +8,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {
-  LayoutDashboard,
-  FileText,
-  Plus,
-  Settings,
-  User,
-} from "lucide-react";
+import { LayoutDashboard, FileText, Settings, User } from "lucide-react";
+import Image from "next/image";
 
 type MenuItem = {
   title: string;
@@ -57,10 +52,17 @@ export function DashboardSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="p-0">
-        <div className="flex items-center gap-2 py-6 px-2">
-          <img src="/favicon.svg" alt="Hunt Assistant" width={32} height={32} />
+        <div className="flex items-center gap-1 py-6 px-2">
+          <Image
+            src="/favicon.svg"
+            alt="Hunt Assistant"
+            width={32}
+            height={32}
+          />
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold text-primary">Hunt Assistant</span>
+            <span className="truncate font-semibold text-primary">
+              Hunt Assistant
+            </span>
           </div>
         </div>
       </SidebarHeader>

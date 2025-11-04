@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { authClient } from '@/lib/auth/auth-client';
-import { signInSchema, type SignInFormData } from '@/lib/validations/auth.schemas';
-import AuthLayout from '@/components/layouts/auth-layout';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { authClient } from "@/lib/auth/auth-client";
+import {
+  signInSchema,
+  type SignInFormData,
+} from "@/lib/validations/auth.schemas";
+import AuthLayout from "@/components/layouts/auth-layout";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -16,34 +18,33 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const form = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
   const handleGoogleSignIn = async () => {
     try {
       const { error } = await authClient.signIn.social({
-        provider: 'google',
-        callbackURL: '/dashboard',
+        provider: "google",
+        callbackURL: "/dashboard",
       });
 
       if (error) {
-        console.error('Google sign-in error:', error);
-        toast.error('Google sign-in failed');
+        console.error("Google sign-in error:", error);
+        toast.error("Google sign-in failed");
       }
     } catch (error) {
-      console.error('Google sign-in error:', error);
-      toast.error('An unexpected error occurred');
+      console.error("Google sign-in error:", error);
+      toast.error("An unexpected error occurred");
     }
   };
 

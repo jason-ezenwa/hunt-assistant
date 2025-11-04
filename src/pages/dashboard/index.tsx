@@ -14,18 +14,8 @@ import Link from "next/link";
 import { FileText, TrendingUp, Calendar, Plus } from "lucide-react";
 import { useSession } from "@/lib/hooks/use-session";
 
-interface Journey {
-  _id: string;
-  companyName: string;
-  jobTitle: string;
-  status: string;
-  insights?: string | null;
-  coverLetter?: string | null;
-  createdAt: string;
-}
-
 export default function Dashboard() {
-  const { data: journeys, isLoading } = useJourneys();
+  const { data: journeys } = useJourneys();
   const { data: session } = useSession();
 
   const user = session?.user;
