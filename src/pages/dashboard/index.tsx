@@ -10,7 +10,7 @@ export default function Dashboard() {
     <AuthenticationGuard>
       <DashboardLayout>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Your Applications</h1>
+          <h1 className="text-3xl font-bold mb-2">Your journeys</h1>
           <p className="text-muted-foreground">
             Manage your job applications and track your progress.
           </p>

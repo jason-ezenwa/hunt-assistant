@@ -1,115 +1,119 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import AuthenticationGuard from '@/components/guards/authentication-guard';
-import DashboardLayout from '@/components/layouts/dashboard-layout';
-import { Button } from '@/components/ui/button';
-import { useJourney } from '@/lib/hooks/use-journeys';
-import { Badge } from '@/components/ui/badge';
-import { toast } from 'sonner';
-import { ArrowLeft, RefreshCw, Download, FileText } from 'lucide-react';
-import Link from 'next/link';
-import ReactMarkdown from 'react-markdown';
+import { useRouter } from "next/router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import AuthenticationGuard from "@/components/guards/authentication-guard";
+import DashboardLayout from "@/components/layouts/dashboard-layout";
+import { Button } from "@/components/ui/button";
+import { useJourney } from "@/lib/hooks/use-journeys";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { ArrowLeft, RefreshCw, Download, FileText } from "lucide-react";
+import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 
 export default function JourneyDetail() {
   const router = useRouter();
   const { id } = router.query;
   const { data: journey, isLoading } = useJourney(id as string);
+  const queryClient = useQueryClient();
 
-  const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
-  const [isGeneratingCoverLetter, setIsGeneratingCoverLetter] = useState(false);
-
-  const handleGenerateInsights = async () => {
-    if (!journey) return;
-
-    setIsGeneratingInsights(true);
-    try {
-      const response = await fetch(`/api/journeys/${journey._id}/insights`, {
-        method: 'POST',
+  const generateInsightsMutation = useMutation({
+    mutationFn: async (journeyId: string) => {
+      const response = await fetch(`/api/journeys/${journeyId}/insights`, {
+        method: "POST",
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate insights');
+        throw new Error("Failed to generate insights");
       }
 
-      toast.success('Insights generated successfully');
-      // Refetch the journey data
-      window.location.reload();
-    } catch (error) {
-      console.error('Error generating insights:', error);
-      toast.error('Failed to generate insights');
-    } finally {
-      setIsGeneratingInsights(false);
-    }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast.success("Insights generated successfully");
+      queryClient.invalidateQueries({ queryKey: ["journey", journey?._id] });
+    },
+    onError: (error) => {
+      console.error("Error generating insights:", error);
+      toast.error("Failed to generate insights");
+    },
+  });
+
+  const generateCoverLetterMutation = useMutation({
+    mutationFn: async (journeyId: string) => {
+      const response = await fetch(`/api/journeys/${journeyId}/cover-letter`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate cover letter");
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      toast.success("Cover letter generated successfully");
+      queryClient.invalidateQueries({ queryKey: ["journey", journey?._id] });
+    },
+    onError: (error) => {
+      console.error("Error generating cover letter:", error);
+      toast.error("Failed to generate cover letter");
+    },
+  });
+
+  const handleGenerateInsights = () => {
+    if (!journey) return;
+    generateInsightsMutation.mutate(journey._id);
   };
 
-  const handleGenerateCoverLetter = async () => {
+  const handleGenerateCoverLetter = () => {
     if (!journey) return;
-
-    setIsGeneratingCoverLetter(true);
-    try {
-      const response = await fetch(`/api/journeys/${journey._id}/cover-letter`, {
-        method: 'POST',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate cover letter');
-      }
-
-      toast.success('Cover letter generated successfully');
-      // Refetch the journey data
-      window.location.reload();
-    } catch (error) {
-      console.error('Error generating cover letter:', error);
-      toast.error('Failed to generate cover letter');
-    } finally {
-      setIsGeneratingCoverLetter(false);
-    }
+    generateCoverLetterMutation.mutate(journey._id);
   };
 
   const handleExportCoverLetter = async () => {
     if (!journey?.coverLetter) return;
 
     try {
-      const response = await fetch('/api/export-document', {
-        method: 'POST',
+      const response = await fetch("/api/export-document", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ content: journey.coverLetter }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to export cover letter');
+        throw new Error("Failed to export cover letter");
       }
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = 'cover-letter.docx';
+      a.download = "cover-letter.docx";
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      toast.success('Cover letter exported successfully');
+      toast.success("Cover letter exported successfully");
     } catch (error) {
-      console.error('Error exporting cover letter:', error);
-      toast.error('Failed to export cover letter');
+      console.error("Error exporting cover letter:", error);
+      toast.error("Failed to export cover letter");
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'in-progress':
-        return 'bg-blue-100 text-blue-800';
-      case 'applied':
-        return 'bg-purple-100 text-purple-800';
-      case 'archived':
-        return 'bg-gray-100 text-gray-800';
+      case "completed":
+        return "bg-green-500/10 text-green-700 border-green-500/20";
+      case "in-progress":
+        return "bg-orange-600/15 text-orange-800 border-orange-600/25";
+      case "applied":
+        return "bg-primary/10 text-primary border-primary/20";
+      case "archived":
+        return "bg-muted text-muted-foreground border-muted-foreground/20";
       default:
-        return 'bg-yellow-100 text-yellow-800';
+        return "bg-yellow-500/10 text-yellow-700 border-yellow-500/20";
     }
   };
 
@@ -133,7 +137,8 @@ export default function JourneyDetail() {
           <div className="max-w-4xl mx-auto text-center py-16">
             <h1 className="text-2xl font-bold mb-4">Application Not Found</h1>
             <p className="text-muted-foreground mb-6">
-              The application you&apos;re looking for doesn&apos;t exist or you don&apos;t have permission to view it.
+              The application you&apos;re looking for doesn&apos;t exist or you
+              don&apos;t have permission to view it.
             </p>
             <Link href="/dashboard">
               <Button>Back to Dashboard</Button>
@@ -159,11 +164,16 @@ export default function JourneyDetail() {
 
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h1 className="text-3xl font-bold mb-2">{journey.companyName}</h1>
-                <p className="text-xl text-muted-foreground">{journey.jobTitle}</p>
+                <h1 className="text-3xl font-bold mb-2">
+                  {journey.companyName}
+                </h1>
+                <p className="text-xl text-muted-foreground">
+                  {journey.jobTitle}
+                </p>
               </div>
-              <Badge className={`${getStatusColor(journey.status)} text-sm`}>
-                {journey.status.replace('-', ' ')}
+              <Badge
+                className={`border ${getStatusColor(journey.status)} text-sm`}>
+                {journey.status.replace("-", " ")}
               </Badge>
             </div>
           </div>
@@ -172,10 +182,13 @@ export default function JourneyDetail() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <Button
               onClick={handleGenerateInsights}
-              disabled={isGeneratingInsights || isGeneratingCoverLetter}
+              disabled={
+                generateInsightsMutation.isPending ||
+                generateCoverLetterMutation.isPending
+              }
               variant="secondary"
               className="h-auto py-3">
-              {isGeneratingInsights ? (
+              {generateInsightsMutation.isPending ? (
                 <>
                   <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                   Analyzing...
@@ -183,16 +196,21 @@ export default function JourneyDetail() {
               ) : (
                 <>
                   <FileText className="w-4 h-4 mr-2" />
-                  {journey.insights ? 'Regenerate Insights' : 'Generate Insights'}
+                  {journey.insights
+                    ? "Regenerate insights"
+                    : "Generate insights"}
                 </>
               )}
             </Button>
 
             <Button
               onClick={handleGenerateCoverLetter}
-              disabled={isGeneratingCoverLetter || isGeneratingInsights}
+              disabled={
+                generateCoverLetterMutation.isPending ||
+                generateInsightsMutation.isPending
+              }
               className="h-auto py-3">
-              {isGeneratingCoverLetter ? (
+              {generateCoverLetterMutation.isPending ? (
                 <>
                   <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                   Writing...
@@ -200,7 +218,9 @@ export default function JourneyDetail() {
               ) : (
                 <>
                   <FileText className="w-4 h-4 mr-2" />
-                  {journey.coverLetter ? 'Regenerate Cover Letter' : 'Generate Cover Letter'}
+                  {journey.coverLetter
+                    ? "Regenerate cover letter"
+                    : "Generate cover letter"}
                 </>
               )}
             </Button>
@@ -244,7 +264,9 @@ export default function JourneyDetail() {
                         </strong>
                       ),
                       em: ({ children }) => (
-                        <em className="italic text-foreground/90">{children}</em>
+                        <em className="italic text-foreground/90">
+                          {children}
+                        </em>
                       ),
                       ul: ({ children }) => (
                         <ul className="pl-4 list-disc mb-4">{children}</ul>
@@ -334,9 +356,12 @@ export default function JourneyDetail() {
                   <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/50 flex items-center justify-center">
                     <FileText className="w-8 h-8 text-muted-foreground" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2">No content generated yet</h3>
+                  <h3 className="text-lg font-medium mb-2">
+                    No content generated yet
+                  </h3>
                   <p className="text-muted-foreground text-sm">
-                    Generate insights and a cover letter to get started with your application.
+                    Generate insights and a cover letter to get started with
+                    your application.
                   </p>
                 </div>
               </div>

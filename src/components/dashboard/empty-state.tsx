@@ -19,14 +19,15 @@ export default function EmptyState() {
           />
         </svg>
       </div>
-      <h3 className="text-lg font-medium mb-2">No applications yet</h3>
+      <h3 className="text-lg font-medium mb-2">No journeys yet</h3>
       <p className="text-muted-foreground text-sm max-w-md mx-auto mb-6">
-        Start your job hunting journey by creating your first application. Upload your resume and get personalized insights.
+        Start your job hunting journey by creating your first application.
+        Upload your resume and get personalized insights.
       </p>
       <Link href="/journey/new">
         <Button>
           <Plus className="w-4 h-4 mr-2" />
-          Create Your First Application
+          Start your first journey
         </Button>
       </Link>
     </div>

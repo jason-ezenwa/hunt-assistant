@@ -23,8 +23,10 @@ export class JourneyService {
   }
 
   async findByUserId(userId: string): Promise<JourneyClient[]> {
-    const journeys = await JourneyModel.find({ userId }).sort({ createdAt: -1 }).lean();
-    return journeys.map(journey => ({
+    const journeys = await JourneyModel.find({ userId })
+      .sort({ createdAt: -1 })
+      .lean();
+    return journeys.map((journey) => ({
       _id: journey._id.toString(),
       userId: journey.userId,
       companyName: journey.companyName,
@@ -60,10 +62,13 @@ export class JourneyService {
     };
   }
 
-  async update(id: string, data: UpdateJourneyInput): Promise<JourneyClient | null> {
+  async update(
+    id: string,
+    data: UpdateJourneyInput
+  ): Promise<JourneyClient | null> {
     const journey = await JourneyModel.findByIdAndUpdate(id, data, {
       new: true,
-      runValidators: true
+      runValidators: true,
     }).lean();
 
     if (!journey) return null;

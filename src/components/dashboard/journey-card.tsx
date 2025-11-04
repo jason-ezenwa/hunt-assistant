@@ -10,15 +10,15 @@ export default function JourneyCard({ journey }: JourneyCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return "border bg-green-500/10 text-green-700 border-green-500/20";
       case 'in-progress':
-        return 'bg-blue-100 text-blue-800';
+        return "border bg-orange-600/15 text-orange-800 border-orange-600/25";
       case 'applied':
-        return 'bg-purple-100 text-purple-800';
+        return "border bg-primary/10 text-primary border-primary/20";
       case 'archived':
-        return 'bg-gray-100 text-gray-800';
+        return "border bg-muted text-muted-foreground border-muted-foreground/20";
       default:
-        return 'bg-yellow-100 text-yellow-800';
+        return "border bg-yellow-500/10 text-yellow-700 border-yellow-500/20";
     }
   };
 

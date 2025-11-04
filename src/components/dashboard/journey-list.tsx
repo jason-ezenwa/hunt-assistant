@@ -40,9 +40,10 @@ export default function JourneyList({ journeys, isLoading }: JourneyListProps) {
             />
           </svg>
         </div>
-        <h3 className="text-lg font-medium mb-2">No applications yet</h3>
+        <h3 className="text-lg font-medium mb-2">No journeys yet</h3>
         <p className="text-muted-foreground text-sm max-w-md mx-auto">
-          Start your job hunting journey by creating your first application. Upload your resume and get personalized insights.
+          Start your job hunt by creating your first journey. Upload your resume
+          and get personalized insights.
         </p>
       </div>
     );

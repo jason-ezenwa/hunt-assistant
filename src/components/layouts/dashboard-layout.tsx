@@ -18,7 +18,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="max-w-6xl mx-auto min-h-screen bg-background">
       <header className="border-b border-white/10 bg-card/30 backdrop-blur-lg sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -34,7 +34,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <Link href="/journey/new">
                 <Button size="sm" className="text-xs md:text-sm">
                   <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                  <span className="hidden sm:inline">New Application</span>
+                  <span className="hidden sm:inline">New journey</span>
                   <span className="sm:hidden">New</span>
                 </Button>
               </Link>
@@ -50,9 +50,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </div>
       </header>
-      <main className="container mx-auto px-4 py-6 md:py-8">
-        {children}
-      </main>
+      <main className="container mx-auto px-4 py-6 md:py-8">{children}</main>
     </div>
   );
 }
