@@ -15,12 +15,12 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  // socialProviders: {
-  //   google: {
-  //     clientId: process.env.GOOGLE_CLIENT_ID || '',
-  //     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-  //   },
-  // },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_SSO_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_SSO_CLIENT_SECRET || "",
+    },
+  },
   trustedOrigins: ["http://localhost:3000", "http://localhost:3001"],
   user: {
     modelName: "users",

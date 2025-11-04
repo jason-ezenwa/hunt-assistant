@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/dashboard">
-              <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+              <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-300 bg-clip-text text-transparent">
                 Hunt Assistant
               </h1>
             </Link>

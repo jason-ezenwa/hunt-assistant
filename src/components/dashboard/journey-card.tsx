@@ -24,31 +24,29 @@ export default function JourneyCard({ journey }: JourneyCardProps) {
 
   return (
     <Link href={`/journey/${journey._id}`}>
-      <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+      <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-foreground mb-1">
+            <h3 className="text-lg font-semibold text-foreground mb-1 group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
               {journey.companyName}
             </h3>
-            <p className="text-muted-foreground text-sm mb-2">
+            <p className="text-muted-foreground text-sm mb-2 group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
               {journey.jobTitle}
             </p>
           </div>
           <Badge className={`${getStatusColor(journey.status)} text-xs`}>
-            {journey.status.replace('-', ' ')}
+            {journey.status.replace("-", " ")}
           </Badge>
         </div>
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center justify-between text-xs text-muted-foreground group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
+          <span>{journey.insights ? "✓ Insights" : "○ Insights"}</span>
           <span>
-            {journey.insights ? '✓ Insights' : '○ Insights'}
-          </span>
-          <span>
-            {journey.coverLetter ? '✓ Cover Letter' : '○ Cover Letter'}
+            {journey.coverLetter ? "✓ Cover Letter" : "○ Cover Letter"}
           </span>
         </div>
 
-        <div className="mt-3 text-xs text-muted-foreground">
+        <div className="mt-3 text-xs text-muted-foreground group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
           Created {new Date(journey.createdAt).toLocaleDateString()}
         </div>
       </div>

@@ -1,29 +1,21 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { Geist } from 'next/font/google';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import Footer from '@/components/ui/footer';
-import { useSession } from '@/lib/hooks/use-session';
+import { Geist } from "next/font/google";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import Footer from "@/components/ui/footer";
+import { useSession } from "@/lib/hooks/use-session";
 
 const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 export default function Home() {
-  const { data: session, isPending } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isPending && session) {
-      router.push('/dashboard');
-    }
-  }, [session, isPending, router]);
+  const { isPending } = useSession();
 
   if (isPending) {
     return (
-      <div className={`min-h-screen bg-background text-foreground ${geistSans.variable} font-[family-name:var(--font-geist-sans)] flex items-center justify-center`}>
+      <div
+        className={`min-h-screen bg-background text-foreground ${geistSans.variable} font-[family-name:var(--font-geist-sans)] flex items-center justify-center`}>
         <div className="text-lg">Loading...</div>
       </div>
     );
@@ -32,14 +24,14 @@ export default function Home() {
   return (
     <div
       className={`min-h-screen bg-background text-foreground ${geistSans.variable} font-[family-name:var(--font-geist-sans)]`}>
-      <div className="flex flex-col gap-6 lg:gap-8 relative z-10 container mx-auto px-4 py-8 max-w-6xl">
-        <main className="flex-1">
+      <div className="flex flex-col gap-6 lg:gap-8 relative z-10 container mx-auto px-4 py-20 max-w-6xl">
+        <main className="flex flex-col gap-20">
           {/* Hero Section */}
-          <section className="text-center py-20 px-4">
-            <h1 className="leading-tight text-5xl font-bold mb-4 tracking-tighter bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+          <section className="text-center px-4">
+            <h1 className="leading-tight text-3xl lg:text-5xl font-bold mb-4 tracking-tighter bg-gradient-to-r from-purple-600 to-pink-300 bg-clip-text text-transparent">
               Hunt Assistant
             </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
+            <p className="text-muted-foreground text-base lg:text-lg max-w-2xl mx-auto mb-8">
               Your personal AI-powered job hunting co-pilot.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -59,16 +51,16 @@ export default function Home() {
           </section>
 
           {/* Features Section */}
-          <section className="py-20 px-4 bg-card/30">
+          <section className="px-4 bg-card/30">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-                Everything you need for job applications
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
+                Everything you need <br /> to land your dream job
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl transition-shadow">
-                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                     <svg
-                      className="w-6 h-6 text-muted-foreground"
+                      className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor">
@@ -80,19 +72,19 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">
+                  <h3 className="text-xl font-semibold mb-3 group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
                     Resume analysis
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
                     Upload your resume and get detailed insights on how well it
                     matches each job opportunity.
                   </p>
                 </div>
 
-                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl transition-shadow">
-                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                     <svg
-                      className="w-6 h-6 text-muted-foreground"
+                      className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor">
@@ -104,19 +96,19 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">
+                  <h3 className="text-xl font-semibold mb-3 group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
                     Tailored cover letters
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
                     Generate personalized cover letters that highlight your most
                     relevant skills and experiences.
                   </p>
                 </div>
 
-                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl transition-shadow">
-                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                     <svg
-                      className="w-6 h-6 text-muted-foreground"
+                      className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor">
@@ -128,19 +120,19 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">
+                  <h3 className="text-xl font-semibold mb-3 group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
                     AI-powered insights
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
                     Get intelligent analysis of job requirements and how your
                     background aligns with them.
                   </p>
                 </div>
 
-                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl transition-shadow">
-                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                <div className="bg-background/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group">
+                  <div className="w-12 h-12 mb-4 rounded-full bg-muted/50 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                     <svg
-                      className="w-6 h-6 text-muted-foreground"
+                      className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor">
@@ -152,8 +144,10 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">Save & reuse</h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <h3 className="text-xl font-semibold mb-3 group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
+                    Save & reuse
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">
                     Store all your applications and generated content for easy
                     access and future reference.
                   </p>
@@ -163,12 +157,13 @@ export default function Home() {
           </section>
 
           {/* CTA Section */}
-          <section className="py-20 px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to supercharge your job search?
+          <section className="pb-16 px-4 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">
+              Ready to supercharge <br />
+              your job search?
             </h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join thousands of job seekers who are landing better opportunities
+            <p className="text-base lg:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Join hundreds of job seekers who are landing better opportunities
               with personalized insights and professional cover letters.
             </p>
             <Link href="/auth/sign-up">

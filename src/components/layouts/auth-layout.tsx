@@ -9,7 +9,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-300 bg-clip-text text-transparent">
             Hunt Assistant
           </h1>
         </div>
