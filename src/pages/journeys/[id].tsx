@@ -174,7 +174,7 @@ export default function JourneyDetail() {
       case "in-progress":
         return { bg: "#F8E5BA", text: "#9C3F0F", border: "#F8E5BA" };
       case "applied":
-        return { bg: "#FFE5E5", text: "#C53030", border: "#FFE5E5" };
+        return { bg: "#DCFCE7", text: "#166534", border: "#DCFCE7" };
       case "archived":
         return { bg: "#F3F4F6", text: "#6B7280", border: "#F3F4F6" };
       default:

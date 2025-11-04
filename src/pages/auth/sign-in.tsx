@@ -31,22 +31,22 @@ export default function SignIn() {
     },
   });
 
-  const handleGoogleSignIn = async () => {
-    try {
-      const { error } = await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/dashboard",
-      });
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     const { error } = await authClient.signIn.social({
+  //       provider: "google",
+  //       callbackURL: "/dashboard",
+  //     });
 
-      if (error) {
-        console.error("Google sign-in error:", error);
-        toast.error("Google sign-in failed");
-      }
-    } catch (error) {
-      console.error("Google sign-in error:", error);
-      toast.error("An unexpected error occurred");
-    }
-  };
+  //     if (error) {
+  //       console.error("Google sign-in error:", error);
+  //       toast.error("Google sign-in failed");
+  //     }
+  //   } catch (error) {
+  //     console.error("Google sign-in error:", error);
+  //     toast.error("An unexpected error occurred");
+  //   }
+  // };
 
   const onSubmit = async (data: SignInFormData) => {
     setIsLoading(true);
@@ -82,7 +82,7 @@ export default function SignIn() {
         </p>
       </div>
 
-      <Button
+      {/* <Button
         type="button"
         onClick={handleGoogleSignIn}
         variant="outline"
@@ -115,7 +115,7 @@ export default function SignIn() {
           OR
         </span>
         <div className="flex-1 h-px bg-white/20"></div>
-      </div>
+      </div> */}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
