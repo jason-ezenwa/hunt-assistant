@@ -2,7 +2,7 @@ import mammoth from "mammoth";
 import pdf from "pdf-parse";
 import { BadRequestError } from "../core/errors";
 
-class ResumeService {
+export class ResumeService {
   async getText(
     fileBuffer: Buffer,
     mimeType: string

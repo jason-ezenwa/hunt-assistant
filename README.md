@@ -1,5 +1,5 @@
 ### What is Hunt Assistant?
-Hunt assistant is an AI powered tool that gives you insights on how you fit for a job based on your qualifications & the job's requirements and helps you write a cover letter you can download, tailored to the job.
+Hunt Assistant is an AI powered tool that gives you insights on how you fit for a job based on your qualifications & the job's requirements and helps you write a cover letter you can download, tailored to the job.
 
 If you're like me and you hate writing cover letters, this is for you.
 
