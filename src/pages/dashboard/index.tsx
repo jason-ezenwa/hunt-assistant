@@ -33,7 +33,10 @@ export default function Dashboard() {
 
   const stats = {
     total: journeys?.length || 0,
-    completed: journeys?.filter((j) => j.status === "completed").length || 0,
+    completed:
+      journeys?.filter((j) => j.status === "completed").length ||
+      journeys?.filter((j) => j.status === "applied").length ||
+      0,
     inProgress: journeys?.filter((j) => j.status === "in-progress").length || 0,
   };
 
@@ -68,7 +71,7 @@ export default function Dashboard() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Completed</CardTitle>
+                <CardTitle className="text-sm font-medium">Applied</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
