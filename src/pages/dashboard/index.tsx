@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { FileText, TrendingUp, Calendar, Plus } from "lucide-react";
 import { useSession } from "@/lib/hooks/use-session";
+import { getStatusColor } from "@/lib/utils";
 
 export default function Dashboard() {
   const { data: journeys } = useJourneys();
@@ -111,30 +112,11 @@ export default function Dashboard() {
                     <Badge
                       className="text-xs border"
                       style={{
-                        backgroundColor:
-                          recentJourney.status === "completed"
-                            ? "#CBF4C9"
-                            : recentJourney.status === "in-progress"
-                            ? "#F8E5BA"
-                            : recentJourney.status === "applied"
-                            ? "#FFE5E5"
-                            : "#F3F4F6",
-                        color:
-                          recentJourney.status === "completed"
-                            ? "#0E6245"
-                            : recentJourney.status === "in-progress"
-                            ? "#9C3F0F"
-                            : recentJourney.status === "applied"
-                            ? "#C53030"
-                            : "#6B7280",
-                        borderColor:
-                          recentJourney.status === "completed"
-                            ? "#CBF4C9"
-                            : recentJourney.status === "in-progress"
-                            ? "#F8E5BA"
-                            : recentJourney.status === "applied"
-                            ? "#FFE5E5"
-                            : "#F3F4F6",
+                        backgroundColor: getStatusColor(recentJourney.status)
+                          .bg,
+                        color: getStatusColor(recentJourney.status).text,
+                        borderColor: getStatusColor(recentJourney.status)
+                          .border,
                       }}>
                       {recentJourney.status.replace("-", " ")}
                     </Badge>

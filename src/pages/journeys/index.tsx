@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { useRouter } from "next/router";
 import AuthenticationGuard from "@/components/guards/authentication-guard";
 import DashboardLayout from "@/components/layouts/dashboard-layout";
@@ -18,6 +17,7 @@ import {
 } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
+import { getStatusColor } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,11 +25,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  PopoverAnchor,
-} from "@/components/ui/popover";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface Journey {
   _id: string;
@@ -45,46 +48,6 @@ export default function JourneysPage() {
   const router = useRouter();
   const { data: journeys, isLoading } = useJourneys();
   const deleteJourneyMutation = useDeleteJourney();
-  const [deletePopoverState, setDeletePopoverState] = useState<{
-    isOpen: boolean;
-    journeyId: string | null;
-    companyName: string | null;
-  }>({ isOpen: false, journeyId: null, companyName: null });
-
-  const handleDeleteJourney = (journeyId: string, companyName: string) => {
-    setDeletePopoverState({ isOpen: true, journeyId, companyName });
-  };
-
-  const handleConfirmDelete = () => {
-    if (!deletePopoverState.journeyId) return;
-    deleteJourneyMutation.mutate(deletePopoverState.journeyId, {
-      onSuccess: () => {
-        toast.success("Journey deleted successfully");
-        setDeletePopoverState({
-          isOpen: false,
-          journeyId: null,
-          companyName: null,
-        });
-      },
-      onError: (error) => {
-        console.error("Error deleting journey:", error);
-        toast.error("Failed to delete journey");
-        setDeletePopoverState({
-          isOpen: false,
-          journeyId: null,
-          companyName: null,
-        });
-      },
-    });
-  };
-
-  const handleCancelDelete = () => {
-    setDeletePopoverState({
-      isOpen: false,
-      journeyId: null,
-      companyName: null,
-    });
-  };
 
   const columns: ColumnDef<Journey>[] = [
     {
@@ -107,15 +70,7 @@ export default function JourneysPage() {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        const colors = {
-          completed: { bg: "#CBF4C9", text: "#0E6245", border: "#CBF4C9" },
-          "in-progress": { bg: "#F8E5BA", text: "#9C3F0F", border: "#F8E5BA" },
-          applied: { bg: "#DCFCE7", text: "#166534", border: "#DCFCE7" },
-          archived: { bg: "#F3F4F6", text: "#6B7280", border: "#F3F4F6" },
-          default: { bg: "#FEF3C7", text: "#92400E", border: "#FEF3C7" },
-        };
-
-        const color = colors[status as keyof typeof colors] || colors.default;
+        const color = getStatusColor(status);
 
         return (
           <Badge
@@ -165,92 +120,70 @@ export default function JourneysPage() {
     {
       id: "actions",
       header: "Actions",
-      cell: ({ row }) => {
-        const cellRef = React.useRef<HTMLDivElement>(null);
-        return (
-          <>
-            <div ref={cellRef}>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={() => {
-                      router.push(`/journeys/${row.original._id}`);
-                    }}>
-                    <Eye className="mr-2 h-4 w-4" />
-                    View
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    variant="destructive"
-                    onClick={() => {
-                      setDeletePopoverState({
-                        isOpen: true,
-                        journeyId: row.original._id,
-                        companyName: row.original.companyName,
-                      });
-                    }}
-                    disabled={deleteJourneyMutation.isPending}>
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <Popover
-              open={
-                deletePopoverState.isOpen &&
-                deletePopoverState.journeyId === row.original._id
-              }
-              onOpenChange={(open) => {
-                if (!open) {
-                  setDeletePopoverState({
-                    isOpen: false,
-                    journeyId: null,
-                    companyName: null,
-                  });
-                }
-              }}>
-              <PopoverAnchor asChild>
-                <div ref={cellRef} />
-              </PopoverAnchor>
-              <PopoverContent className="w-80" align="end">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-                      <AlertTriangle className="h-5 w-5 text-red-600" />
+      cell: ({ row }) => (
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => {
+                  router.push(`/journeys/${row.original._id}`);
+                }}>
+                <Eye className="mr-2 h-4 w-4" />
+                View
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={(e) => e.preventDefault()}
+                disabled={deleteJourneyMutation.isPending}>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <div className="flex items-center w-full">
+                      <Trash2 className="mr-2 h-4 w-4 text-red-500" />
+                      Delete
                     </div>
-                    <div>
-                      <h4 className="font-medium">Delete journey</h4>
-                      <p className="text-sm text-muted-foreground">
-                        This action cannot be undone.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm">
-                      Are you sure you want to delete the journey for{" "}
-                      <span className="font-medium">
-                        {row.original.companyName}
-                      </span>
-                      ?
-                    </p>
-                    <div className="flex gap-2 justify-end">
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
+                          <AlertTriangle className="h-5 w-5 text-red-600" />
+                        </div>
+                        Delete journey
+                      </DialogTitle>
+                      <DialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete the journey for{" "}
+                        <span className="font-medium">
+                          {row.original.companyName}
+                        </span>
+                        .
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
                       <Button
                         variant="outline"
-                        size="sm"
-                        onClick={handleCancelDelete}
                         disabled={deleteJourneyMutation.isPending}>
                         Cancel
                       </Button>
                       <Button
                         variant="destructive"
-                        size="sm"
-                        onClick={handleConfirmDelete}
+                        onClick={() => {
+                          deleteJourneyMutation.mutate(row.original._id, {
+                            onSuccess: () => {
+                              toast.success("Journey deleted successfully");
+                            },
+                            onError: (error) => {
+                              console.error("Error deleting journey:", error);
+                              toast.error("Failed to delete journey");
+                            },
+                          });
+                        }}
                         disabled={deleteJourneyMutation.isPending}>
                         {deleteJourneyMutation.isPending ? (
                           <>
@@ -261,14 +194,14 @@ export default function JourneysPage() {
                           "Delete"
                         )}
                       </Button>
-                    </div>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </>
-        );
-      },
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
+      ),
     },
   ];
 

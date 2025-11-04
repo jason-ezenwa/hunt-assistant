@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import AuthenticationGuard from "@/components/guards/authentication-guard";
 import DashboardLayout from "@/components/layouts/dashboard-layout";
 import { Button } from "@/components/ui/button";
@@ -11,11 +10,16 @@ import {
 } from "@/lib/hooks/use-journey-mutations";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { getStatusColor } from "@/lib/utils";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   ArrowLeft,
   RefreshCw,
@@ -30,9 +34,10 @@ import ReactMarkdown from "react-markdown";
 
 export default function JourneyDetail() {
   const router = useRouter();
+
   const { id } = router.query;
+
   const { data: journey, isLoading } = useJourney(id as string);
-  const [isDeletePopoverOpen, setIsDeletePopoverOpen] = useState(false);
   const queryClient = useQueryClient();
   const updateJourneyMutation = useUpdateJourney();
   const deleteJourneyMutation = useDeleteJourney();
@@ -143,43 +148,18 @@ export default function JourneyDetail() {
     );
   };
 
-  const handleDeleteJourney = () => {
-    setIsDeletePopoverOpen(true);
-  };
-
   const handleConfirmDelete = () => {
     if (!journey) return;
     deleteJourneyMutation.mutate(journey._id, {
       onSuccess: () => {
         toast.success("Journey deleted successfully");
         router.push("/journeys");
-        setIsDeletePopoverOpen(false);
       },
       onError: (error) => {
         console.error("Error deleting journey:", error);
         toast.error("Failed to delete journey");
-        setIsDeletePopoverOpen(false);
       },
     });
-  };
-
-  const handleCancelDelete = () => {
-    setIsDeletePopoverOpen(false);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "completed":
-        return { bg: "#CBF4C9", text: "#0E6245", border: "#CBF4C9" };
-      case "in-progress":
-        return { bg: "#F8E5BA", text: "#9C3F0F", border: "#F8E5BA" };
-      case "applied":
-        return { bg: "#DCFCE7", text: "#166534", border: "#DCFCE7" };
-      case "archived":
-        return { bg: "#F3F4F6", text: "#6B7280", border: "#F3F4F6" };
-      default:
-        return { bg: "#FEF3C7", text: "#92400E", border: "#FEF3C7" };
-    }
   };
 
   if (isLoading) {
@@ -270,10 +250,8 @@ export default function JourneyDetail() {
                     )}
                   </Button>
                 )}
-                <Popover
-                  open={isDeletePopoverOpen}
-                  onOpenChange={setIsDeletePopoverOpen}>
-                  <PopoverTrigger asChild>
+                <Dialog>
+                  <DialogTrigger asChild>
                     <Button
                       variant="outline"
                       size="sm"
@@ -291,55 +269,46 @@ export default function JourneyDetail() {
                         </>
                       )}
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80" align="end">
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3">
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
                           <AlertTriangle className="h-5 w-5 text-red-600" />
                         </div>
-                        <div>
-                          <h4 className="font-medium">Delete journey</h4>
-                          <p className="text-sm text-muted-foreground">
-                            This action cannot be undone.
-                          </p>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <p className="text-sm">
-                          Are you sure you want to delete the journey for{" "}
-                          <span className="font-medium">
-                            {journey.companyName}
-                          </span>
-                          ?
-                        </p>
-                        <div className="flex gap-2 justify-end">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleCancelDelete}
-                            disabled={deleteJourneyMutation.isPending}>
-                            Cancel
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={handleConfirmDelete}
-                            disabled={deleteJourneyMutation.isPending}>
-                            {deleteJourneyMutation.isPending ? (
-                              <>
-                                <RefreshCw className="w-3 h-3 mr-2 animate-spin" />
-                                Deleting...
-                              </>
-                            ) : (
-                              "Delete"
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                        Delete journey
+                      </DialogTitle>
+                      <DialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete the journey for{" "}
+                        <span className="font-medium">
+                          {journey.companyName}
+                        </span>
+                        .
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        disabled={deleteJourneyMutation.isPending}>
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={handleConfirmDelete}
+                        disabled={deleteJourneyMutation.isPending}>
+                        {deleteJourneyMutation.isPending ? (
+                          <>
+                            <RefreshCw className="w-3 h-3 mr-2 animate-spin" />
+                            Deleting...
+                          </>
+                        ) : (
+                          "Delete"
+                        )}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </div>
