@@ -21,7 +21,11 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_SSO_CLIENT_SECRET || "",
     },
   },
-  trustedOrigins: ["http://localhost:3000", "http://localhost:3001"],
+  trustedOrigins: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://hunt-assistant.vercel.app",
+  ],
   user: {
     modelName: "users",
   },
