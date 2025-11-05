@@ -1,10 +1,8 @@
 import { ReactNode } from "react";
-import Link from "next/link";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Plus, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: ReactNode;
