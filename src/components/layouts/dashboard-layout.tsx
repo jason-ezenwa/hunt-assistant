@@ -32,15 +32,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <DashboardSidebar />
             </SheetContent>
           </Sheet>
-
-          <div className="ml-auto flex items-center gap-2">
-            <Link href="/journeys/new">
-              <Button size="sm" className="text-xs">
-                <Plus className="w-3 h-3 mr-1" />
-                New
-              </Button>
-            </Link>
-          </div>
         </header>
 
         {/* Desktop header - visible on desktop */}
