@@ -41,6 +41,4 @@ export const updateJourneySchema = z.object({
 
 // Form data type (frontend)
 export type JourneyFormData = z.infer<typeof journeyFormSchema>;
-
-// Re-export backend DTO types
-export type { CreateJourneyInput, UpdateJourneyInput } from '@/lib/dtos/journeys/inputs.dto';
+export type UpdateJourneyFormData = z.infer<typeof updateJourneySchema>;

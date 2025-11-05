@@ -2,10 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '@/lib/db/mongodb';
 import { journeyService } from '@/lib/services/journey.service';
 import { createJourneySchema } from '@/lib/validations/journey.schemas';
-import { getSessionUser } from '@/lib/auth/api-helpers';
-import { aiService } from "@/lib/ai/ai.service";
+import { getSessionUser } from "@/lib/auth/api-helpers";
 import multer from "multer";
-import { resumeService } from "@/lib/resume/resume.service";
+import { logEvent } from "@/lib/core/logger";
 
 // Define multer storage options
 const storage = multer.memoryStorage();
@@ -52,7 +51,7 @@ export default async function handler(
         const journeys = await journeyService.findByUserId(user.id);
         res.status(200).json(journeys);
       } catch (error) {
-        console.error("Error fetching journeys:", error);
+        logEvent("error", "Error fetching journeys", { error });
         res.status(500).json({ error: "Failed to fetch journeys" });
       }
       break;
@@ -68,31 +67,22 @@ export default async function handler(
         }
 
         // 2. Extract resume text
-        const { text: resumeText } = await resumeService.getText(
+        const resumeText = await journeyService.extractResumeText(
           resumeFile.buffer,
           resumeFile.mimetype
         );
 
-        // 3. Generate insights immediately
-        const insightsResult = await aiService.generateInsights({
-          resumeText: resumeText,
-          jobDescription: req.body.jobDescription,
-        });
-        const insights = insightsResult.insights;
-
-        // 4. Prepare journey data with extracted text and insights
+        // 3. Prepare journey data
         const journeyData = {
           companyName: req.body.companyName,
           jobTitle: req.body.jobTitle,
           jobDescription: req.body.jobDescription,
           resumeFileName: resumeFile.originalname,
           resumeText: resumeText,
-          insights: insights,
           userId: user.id,
-          status: "in-progress",
         };
 
-        // 5. Validate complete data
+        // 4. Validate data
         const validationResult = createJourneySchema.safeParse(journeyData);
         if (!validationResult.success) {
           return res.status(400).json({
@@ -101,11 +91,11 @@ export default async function handler(
           });
         }
 
-        // 6. Create journey
+        // 5. Create journey
         const journey = await journeyService.create(validationResult.data);
         res.status(201).json(journey);
       } catch (error) {
-        console.error("Error creating journey:", error);
+        logEvent("error", "Error creating journey", { error });
         res.status(500).json({ error: "Failed to create journey" });
       }
       break;

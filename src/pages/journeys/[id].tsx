@@ -207,7 +207,7 @@ export default function JourneyDetail() {
               Back to journeys
             </Link>
 
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between mb-4 gap-4">
               <div>
                 <h1 className="text-3xl font-bold mb-2">
                   {journey.companyName}
