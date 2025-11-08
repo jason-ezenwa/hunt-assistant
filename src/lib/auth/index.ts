@@ -10,8 +10,8 @@ const client = new MongoClient(mongoUri);
 const db = client.db("hunt-assistant");
 
 const redirectURI = process.env.NEXT_PUBLIC_BETTER_AUTH_URL
-  ? `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/dashboard`
-  : "http://localhost:3000/dashboard";
+  ? `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/auth/callback/google`
+  : "http://localhost:3000/api/auth/callback/google";
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
