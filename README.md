@@ -1,29 +1,120 @@
-### What is Hunt Assistant?
-Hunt Assistant is an AI powered tool that gives you insights on how you fit for a job based on your qualifications & the job's requirements and helps you write a cover letter you can download, tailored to the job.
+# Hunt Assistant
+
+An AI-powered job application co-pilot.
+
+## What is Hunt Assistant?
+
+Hunt Assistant is an AI-powered tool that solves a real pain point - writing cover letters sucks. This app analyzes your resume against job descriptions, gives you insights on how well you fit for the role, and generates tailored cover letters you can download as Word documents. Hunt Assistant also helps you track your job applications in one place.
 
 If you're like me and you hate writing cover letters, this is for you.
 
-## Set up
-- Clone the repository using ```git clone https://github.com/jason-ezenwa/hunt-assistant``` and install the dependencies using the ```npm install``` command.
+## Features
 
--Next, run the development server:
+- **AI-Powered Insights**: Get detailed analysis of how your qualifications match job requirements
+- **Automated Cover Letters**: Generate personalized cover letters tailored to specific job descriptions
+- **Document Processing**: Upload and process PDF and DOCX resume files
+- **Download Ready**: Export cover letters as properly formatted Word documents
+- **Job Journey Tracking**: Manage your application process from draft to completion
+- **Playground Mode**: Test the AI features without creating an account
 
-```bash
-npm run dev
-```
+## Technical Highlights
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Dual AI Integration
+Built with both OpenAI and Groq APIs with automatic fallback switching. The app intelligently chooses between providers based on availability and cost optimization.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Advanced Document Processing
+- Handles PDF and DOCX resume uploads with custom text extraction using `mammoth` and `pdf-parse` libraries
+- Custom markdown-to-DOCX converter that preserves formatting using the `docx` library
+- Sophisticated paragraph and heading parsing for professional document generation
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Full Authentication System
+Implemented with `better-auth` and MongoDB adapter, supporting both email/password authentication and Google OAuth.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+### Modern Tech Stack
+- **Frontend**: Next.js 15 with TypeScript, TanStack Query for state management, Radix UI components, Tailwind CSS
+- **Backend**: Next.js API routes with MongoDB and Mongoose ODM
+- **Authentication**: Better-auth with MongoDB adapter, email/password and Google OAuth
+- **AI**: Dual provider integration (OpenAI + Groq) with intelligent switching
+- **Validation**: Zod schemas for type-safe data validation
+- **File Uploads**: Multer integration with proper MIME type handling
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Production-Ready Features
+- Comprehensive error handling and logging
+- RESTful API design with proper authorization
+- Responsive mobile-first UI
+- Real-time toast notifications and loading states
 
-## Deploy on Vercel
+## Setup Instructions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Prerequisites
+- Node.js 18+
+- MongoDB
+- OpenAI API key (optional, can use Groq instead)
+- Groq API key (optional, can use OpenAI instead)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/jason-ezenwa/hunt-assistant.git
+   cd hunt-assistant
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**
+   Create a `.env.local` file in the root directory with the following variables:
+   ```env
+   # Database
+   MONGODB_URI=mongodb://localhost:27017/hunt-assistant
+
+   # AI Providers (at least one required)
+   OPENAI_API_KEY=your_openai_api_key_here
+   GROQ_API_KEY=your_groq_api_key_here
+
+   # Authentication
+   GOOGLE_SSO_CLIENT_ID=your_google_client_id
+   GOOGLE_SSO_CLIENT_SECRET=your_google_client_secret
+   NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
+   BETTER_AUTH_URL=http://localhost:3000
+   ```
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
+
+
+## Deployment
+
+### Vercel Deployment
+
+The easiest way to deploy is using Vercel:
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add environment variables in Vercel's dashboard
+4. Deploy!
+
+### Manual Deployment
+
+For other platforms, ensure you have:
+- Node.js runtime
+- MongoDB connection
+- Environment variables configured
+- Build command: `npm run build`
+- Start command: `npm start`
+
+## Contributing
+
+This was a solo project, but feel free to open issues or submit pull requests for improvements!
+
+## License
+
+MIT License - feel free to use this code for your own projects.
