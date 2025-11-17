@@ -38,7 +38,7 @@ const Footer = () => {
               <TwitterIcon className="w-4 h-4" />
             </a>
             <a
-              href="mailto:emelieobumse100@gmail.com"
+              href="mailto:chukwuemelie.ezenwa@gmail.com"
               className="text-muted-foreground hover:text-primary transition-colors"
               target="_blank">
               <Mail className="w-5 h-5" />
