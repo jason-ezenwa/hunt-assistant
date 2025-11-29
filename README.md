@@ -117,4 +117,4 @@ This was a solo project, but feel free to open issues or submit pull requests fo
 
 ## License
 
-MIT License - feel free to use this code for your own projects.
+This project is licensed under the Mozilla Public License Version 2.0 - see the [LICENSE.md](LICENSE.md) file for details.
