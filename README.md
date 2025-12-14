@@ -1,10 +1,6 @@
 # Hunt Assistant
 
-An AI-powered job application co-pilot.
-
-## What is Hunt Assistant?
-
-Hunt Assistant is an AI-powered tool that solves a real pain point - writing cover letters sucks. This app analyzes your resume against job descriptions, gives you insights on how well you fit for the role, and generates tailored cover letters you can download as Word documents. Hunt Assistant also helps you track your job applications in one place.
+Hunt Assistant is an AI-powered job application co-pilot that solves a real pain point - writing cover letters sucks. This app analyzes your resume against job descriptions, gives you insights on how well you fit for the role, and generates tailored cover letters you can download as Word documents. Hunt Assistant also helps you track your job applications in one place.
 
 If you're like me and you hate writing cover letters, this is for you.
 
