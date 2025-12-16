@@ -31,6 +31,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function JourneyDetail() {
   const router = useRouter();
@@ -369,141 +376,154 @@ export default function JourneyDetail() {
           <div className="space-y-8">
             {/* Insights */}
             {journey.insights && (
-              <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg">
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-3">
-                  <div className="w-2.5 h-2.5 bg-secondary rounded-full shadow-lg shadow-secondary/50"></div>
-                  Job fit analysis
-                </h2>
-                <div className="prose prose-sm max-w-none text-foreground/80 leading-relaxed">
-                  <ReactMarkdown
-                    components={{
-                      h1: ({ children }) => (
-                        <h1 className="text-2xl font-bold mb-4 text-foreground">
-                          {children}
-                        </h1>
-                      ),
-                      h2: ({ children }) => (
-                        <h2 className="text-xl font-semibold mb-3 text-foreground">
-                          {children}
-                        </h2>
-                      ),
-                      h3: ({ children }) => (
-                        <h3 className="text-lg font-medium mb-2 text-foreground">
-                          {children}
-                        </h3>
-                      ),
-                      p: ({ children }) => (
-                        <p className="mb-4 text-foreground/80 leading-relaxed">
-                          {children}
-                        </p>
-                      ),
-                      strong: ({ children }) => (
-                        <strong className="font-semibold text-foreground">
-                          {children}
-                        </strong>
-                      ),
-                      em: ({ children }) => (
-                        <em className="italic text-foreground/90">
-                          {children}
-                        </em>
-                      ),
-                      ul: ({ children }) => (
-                        <ul className="pl-4 list-disc mb-4">{children}</ul>
-                      ),
-                      ol: ({ children }) => (
-                        <ol className="pl-4 list-decimal mb-4">{children}</ol>
-                      ),
-                      li: ({ children }) => (
-                        <li className="text-foreground/80">{children}</li>
-                      ),
-                    }}>
-                    {journey.insights}
-                  </ReactMarkdown>
-                </div>
-              </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-semibold flex items-center gap-3 text-card-foreground">
+                    <div className="w-2.5 h-2.5 bg-secondary rounded-full shadow-lg shadow-secondary/50"></div>
+                    Job fit analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="prose prose-sm max-w-none text-card-foreground/80 leading-relaxed">
+                    <ReactMarkdown
+                      components={{
+                        h1: ({ children }) => (
+                          <h1 className="text-2xl font-bold mb-4 text-card-foreground">
+                            {children}
+                          </h1>
+                        ),
+                        h2: ({ children }) => (
+                          <h2 className="text-xl font-semibold mb-3 text-card-foreground">
+                            {children}
+                          </h2>
+                        ),
+                        h3: ({ children }) => (
+                          <h3 className="text-lg font-medium mb-2 text-card-foreground">
+                            {children}
+                          </h3>
+                        ),
+                        p: ({ children }) => (
+                          <p className="mb-4 text-card-foreground/80 leading-relaxed">
+                            {children}
+                          </p>
+                        ),
+                        strong: ({ children }) => (
+                          <strong className="font-semibold text-card-foreground">
+                            {children}
+                          </strong>
+                        ),
+                        em: ({ children }) => (
+                          <em className="italic text-card-foreground/90">
+                            {children}
+                          </em>
+                        ),
+                        ul: ({ children }) => (
+                          <ul className="pl-4 list-disc mb-4">{children}</ul>
+                        ),
+                        ol: ({ children }) => (
+                          <ol className="pl-4 list-decimal mb-4">{children}</ol>
+                        ),
+                        li: ({ children }) => (
+                          <li className="text-card-foreground/80">
+                            {children}
+                          </li>
+                        ),
+                      }}>
+                      {journey.insights}
+                    </ReactMarkdown>
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
             {/* Cover Letter */}
             {journey.coverLetter && (
-              <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold flex items-center gap-3">
-                    <div className="w-2.5 h-2.5 bg-primary rounded-full shadow-lg shadow-primary/50"></div>
-                    Cover letter
-                  </h2>
-                  <Button
-                    onClick={handleExportCoverLetter}
-                    variant="outline"
-                    size="sm">
-                    <Download className="w-4 h-4 mr-2" />
-                    Download
-                  </Button>
-                </div>
-                <div className="prose prose-sm max-w-none text-foreground/80 leading-relaxed">
-                  <ReactMarkdown
-                    components={{
-                      h1: ({ children }) => (
-                        <h1 className="text-2xl font-bold mb-4 text-foreground">
-                          {children}
-                        </h1>
-                      ),
-                      h2: ({ children }) => (
-                        <h2 className="text-xl font-semibold mb-3 text-foreground">
-                          {children}
-                        </h2>
-                      ),
-                      h3: ({ children }) => (
-                        <h3 className="text-lg font-medium mb-2 text-foreground">
-                          {children}
-                        </h3>
-                      ),
-                      p: ({ children }) => (
-                        <p className="mb-4 text-foreground/80 leading-relaxed">
-                          {children}
-                        </p>
-                      ),
-                      strong: ({ children }) => (
-                        <strong className="font-semibold text-foreground">
-                          {children}
-                        </strong>
-                      ),
-                      em: ({ children }) => (
-                        <em className="italic text-foreground/90">
-                          {children}
-                        </em>
-                      ),
-                      ul: ({ children }) => (
-                        <ul className="pl-4 list-disc mb-4">{children}</ul>
-                      ),
-                      ol: ({ children }) => (
-                        <ol className="pl-4 list-decimal mb-4">{children}</ol>
-                      ),
-                      li: ({ children }) => (
-                        <li className="text-foreground/80">{children}</li>
-                      ),
-                    }}>
-                    {journey.coverLetter}
-                  </ReactMarkdown>
-                </div>
-              </div>
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-xl font-semibold flex items-center gap-3 text-card-foreground">
+                      <div className="w-2.5 h-2.5 bg-primary rounded-full shadow-lg shadow-primary/50"></div>
+                      Cover letter
+                    </CardTitle>
+                    <Button
+                      onClick={handleExportCoverLetter}
+                      variant="outline"
+                      size="sm"
+                      className="hover:bg-secondary">
+                      <Download className="w-4 h-4 mr-2" />
+                      Download
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="prose prose-sm max-w-none text-card-foreground/80 leading-relaxed">
+                    <ReactMarkdown
+                      components={{
+                        h1: ({ children }) => (
+                          <h1 className="text-2xl font-bold mb-4 text-card-foreground">
+                            {children}
+                          </h1>
+                        ),
+                        h2: ({ children }) => (
+                          <h2 className="text-xl font-semibold mb-3 text-card-foreground">
+                            {children}
+                          </h2>
+                        ),
+                        h3: ({ children }) => (
+                          <h3 className="text-lg font-medium mb-2 text-card-foreground">
+                            {children}
+                          </h3>
+                        ),
+                        p: ({ children }) => (
+                          <p className="mb-4 text-card-foreground/80 leading-relaxed">
+                            {children}
+                          </p>
+                        ),
+                        strong: ({ children }) => (
+                          <strong className="font-semibold text-card-foreground">
+                            {children}
+                          </strong>
+                        ),
+                        em: ({ children }) => (
+                          <em className="italic text-card-foreground/90">
+                            {children}
+                          </em>
+                        ),
+                        ul: ({ children }) => (
+                          <ul className="pl-4 list-disc mb-4">{children}</ul>
+                        ),
+                        ol: ({ children }) => (
+                          <ol className="pl-4 list-decimal mb-4">{children}</ol>
+                        ),
+                        li: ({ children }) => (
+                          <li className="text-card-foreground/80">
+                            {children}
+                          </li>
+                        ),
+                      }}>
+                      {journey.coverLetter}
+                    </ReactMarkdown>
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
             {/* No content yet */}
             {!journey.insights && !journey.coverLetter && (
-              <div className="bg-card/50 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-lg">
-                <div className="text-center py-8">
+              <Card>
+                <CardContent className="text-center py-8">
                   <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/50 flex items-center justify-center">
                     <FileText className="w-8 h-8 text-muted-foreground" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2">
+                  <CardTitle className="text-lg font-medium mb-2 text-card-foreground">
                     No content generated yet
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground text-sm">
                     Generate insights and a cover letter to get started with
                     your application.
-                  </p>
-                </div>
-              </div>
+                  </CardDescription>
+                </CardContent>
+              </Card>
             )}
           </div>
         </div>

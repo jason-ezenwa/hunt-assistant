@@ -74,7 +74,7 @@ export default function SignIn() {
   return (
     <AuthLayout>
       <div className="mb-4 md:mb-6">
-        <h1 className="text-xl md:text-2xl font-semibold text-center text-foreground">
+        <h1 className="text-xl md:text-2xl font-semibold text-center text-card-foreground">
           Welcome back
         </h1>
         <p className="text-sm text-muted-foreground text-center mt-2">
@@ -86,7 +86,7 @@ export default function SignIn() {
         type="button"
         onClick={handleGoogleSignIn}
         variant="outline"
-        className="w-full mb-4 md:mb-6 bg-background/80 border border-white/20 text-foreground font-normal py-2 md:py-3 px-3 md:px-4 h-auto rounded-lg hover:bg-white/10 hover:border-white/40 hover:scale-[1.02] hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 text-sm md:text-base flex items-center justify-center gap-2 md:gap-3"
+        className="w-full mb-4 md:mb-6 hover:bg-secondary"
         disabled={isLoading}>
         <svg className="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24">
           <path

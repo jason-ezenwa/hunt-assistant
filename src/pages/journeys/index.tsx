@@ -99,7 +99,7 @@ export default function JourneysPage() {
           {row.original.insights ? (
             <span className="text-primary">✓</span>
           ) : (
-            <span className="text-gray-400">○</span>
+            <span className="text-muted-foreground">○</span>
           )}
         </span>
       ),
@@ -112,7 +112,7 @@ export default function JourneysPage() {
           {row.original.coverLetter ? (
             <span className="text-primary">✓</span>
           ) : (
-            <span className="text-gray-400">○</span>
+            <span className="text-muted-foreground">○</span>
           )}
         </span>
       ),
@@ -144,15 +144,15 @@ export default function JourneysPage() {
                 <Dialog>
                   <DialogTrigger asChild>
                     <div className="flex items-center w-full">
-                      <Trash2 className="mr-2 h-4 w-4 text-red-500" />
+                      <Trash2 className="mr-2 h-4 w-4 text-destructive" />
                       Delete
                     </div>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-                          <AlertTriangle className="h-5 w-5 text-red-600" />
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10">
+                          <AlertTriangle className="h-5 w-5 text-destructive" />
                         </div>
                         Delete journey
                       </DialogTitle>
@@ -211,7 +211,7 @@ export default function JourneysPage() {
         <div className="space-y-8">
           {/* Header */}
           <div className="flex items-center justify-between">
-            <div>
+            <div className="max-w-[62%] md:max-w-full flex-1">
               <h1 className="text-3xl font-bold mb-2">Journeys</h1>
               <p className="text-muted-foreground">
                 Manage all your job applications and track progress.

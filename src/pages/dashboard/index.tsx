@@ -50,8 +50,7 @@ export default function Dashboard() {
             <p className="text-muted-foreground">
               {` Welcome back${
                 !user ? "" : `, ${userName}`
-              }! Here's an overview of your job search
-              journey.`}
+              }! Here's an overview of your job search.`}
             </p>
           </div>
 
@@ -59,35 +58,43 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
                   Total journeys
                 </CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.total}</div>
+                <div className="text-2xl font-bold text-card-foreground">
+                  {stats.total}
+                </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Applied</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Applied
+                </CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.completed}</div>
+                <div className="text-2xl font-bold text-card-foreground">
+                  {stats.completed}
+                </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
                   In progress
                 </CardTitle>
                 <Calendar className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.inProgress}</div>
+                <div className="text-2xl font-bold text-card-foreground">
+                  {stats.inProgress}
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -97,7 +104,11 @@ export default function Dashboard() {
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Recent journey</h2>
-                <Button asChild size="sm" variant="outline">
+                <Button
+                  asChild
+                  size="sm"
+                  variant="outline"
+                  className="hover:bg-secondary">
                   <Link href="/journeys">View all journeys</Link>
                 </Button>
               </div>
@@ -105,10 +116,10 @@ export default function Dashboard() {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
-                      <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                      <CardTitle className="text-lg group-hover:text-primary transition-colors text-card-foreground">
                         {recentJourney.companyName}
                       </CardTitle>
-                      <CardDescription className="text-base">
+                      <CardDescription className="text-base text-muted-foreground">
                         {recentJourney.jobTitle}
                       </CardDescription>
                     </div>
@@ -171,19 +182,23 @@ export default function Dashboard() {
 
           {/* Quick Actions */}
           {!recentJourney && (
-            <div className="text-center py-12">
-              <h2 className="text-xl font-semibold mb-4">Get started</h2>
-              <p className="text-muted-foreground mb-6">
-                Create your first journey to start getting personalized insights
-                and cover letters.
-              </p>
-              <Button asChild size="lg">
-                <Link href="/journeys/new">
-                  <Plus className="w-5 h-5 mr-2" />
-                  Create your first journey
-                </Link>
-              </Button>
-            </div>
+            <Card>
+              <CardContent className="text-center py-12">
+                <CardTitle className="text-xl font-semibold mb-4 text-card-foreground">
+                  Get started
+                </CardTitle>
+                <CardDescription className="text-muted-foreground mb-6">
+                  Create your first journey to start getting personalized
+                  insights and cover letters.
+                </CardDescription>
+                <Button asChild size="lg">
+                  <Link href="/journeys/new">
+                    <Plus className="w-5 h-5 mr-2" />
+                    Create your first journey
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
           )}
         </div>
       </DashboardLayout>
