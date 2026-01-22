@@ -5,7 +5,7 @@ import { useJourneys } from "@/lib/hooks/use-journeys";
 import { useDeleteJourney } from "@/lib/hooks/use-journey-mutations";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/data-table";
+import { ControlledDataTable } from "@/components/ui/controlled-data-table";
 import Link from "next/link";
 import {
   Plus,
@@ -15,7 +15,12 @@ import {
   RefreshCw,
   Eye,
 } from "lucide-react";
-import { ColumnDef } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { toast } from "sonner";
 import { getStatusColor } from "@/lib/utils";
 import {
@@ -205,6 +210,18 @@ export default function JourneysPage() {
     },
   ];
 
+  const table = useReactTable({
+    data: journeys || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
+  });
+
   return (
     <AuthenticationGuard>
       <DashboardLayout>
@@ -226,11 +243,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Journeys Table */}
-          <DataTable
-            columns={columns}
-            data={journeys || []}
-            loading={isLoading}
-          />
+          <ControlledDataTable table={table} loading={isLoading} />
         </div>
       </DashboardLayout>
     </AuthenticationGuard>

@@ -14,9 +14,10 @@ import Link from "next/link";
 import { FileText, TrendingUp, Calendar, Plus } from "lucide-react";
 import { useSession } from "@/lib/hooks/use-session";
 import { getStatusColor } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Dashboard() {
-  const { data: journeys } = useJourneys();
+  const { data: journeys, isLoading } = useJourneys();
   const { data: session } = useSession();
 
   const user = session?.user;
@@ -65,7 +66,7 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-card-foreground">
-                  {stats.total}
+                  {isLoading ? <Skeleton className="h-8 w-12" /> : stats.total}
                 </div>
               </CardContent>
             </Card>
@@ -79,7 +80,11 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-card-foreground">
-                  {stats.completed}
+                  {isLoading ? (
+                    <Skeleton className="h-8 w-12" />
+                  ) : (
+                    stats.completed
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -93,14 +98,46 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-card-foreground">
-                  {stats.inProgress}
+                  {isLoading ? (
+                    <Skeleton className="h-8 w-12" />
+                  ) : (
+                    stats.inProgress
+                  )}
                 </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Recent Journey */}
-          {recentJourney && (
+          {isLoading ? (
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <Skeleton className="h-7 w-32" />
+                <Skeleton className="h-9 w-32" />
+              </div>
+              <Card>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <Skeleton className="h-6 w-48" />
+                      <Skeleton className="h-5 w-32" />
+                    </div>
+                    <Skeleton className="h-6 w-20 rounded-full" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-4 mb-4">
+                    <Skeleton className="h-5 w-24" />
+                    <Skeleton className="h-5 w-24" />
+                  </div>
+                  <div className="flex gap-2">
+                    <Skeleton className="h-9 w-24" />
+                    <Skeleton className="h-9 w-32" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ) : recentJourney ? (
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Recent journey</h2>
@@ -178,10 +215,10 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
             </div>
-          )}
+          ) : null}
 
           {/* Quick Actions */}
-          {!recentJourney && (
+          {!isLoading && !recentJourney && (
             <Card>
               <CardContent className="text-center py-12">
                 <CardTitle className="text-xl font-semibold mb-4 text-card-foreground">
