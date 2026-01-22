@@ -83,7 +83,7 @@ export function ControlledDataTable<TData>({
                 data-state={row.getIsSelected() && "selected"}
                 className={cn(onRowClick && "cursor-pointer")}
                 onClick={() => onRowClick?.(row.original)}>
-                {row.getVisibleCells().map((cell, index) => (
+                {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
                     className={cn(
