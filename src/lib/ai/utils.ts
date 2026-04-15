@@ -24,6 +24,7 @@ export const constructInsightsMessages = (
           No need for header stating its a job fit analysis
           No need to explain who it is for, just dive right into it.
           Go straight to the analysis without any preamble.
+          Do not use emojis anywhere in the output.
         `,
     },
     {
@@ -56,6 +57,7 @@ export const constructCoverLetterMessages = (
         No need to start by explaining its a cover letter.
         No need to say "here is a cover letter".
         Do not include placeholders for the name, address, phone number, email, etc. Stuff like [Company Name] should be the actual company name.
+        Do not use emojis anywhere in the output.
         `,
     },
     {

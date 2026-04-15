@@ -18,6 +18,7 @@ export interface JourneyData {
   resumeText: string;
   insights?: string | null;
   coverLetter?: string | null;
+  tailoredResume?: string | null;
   status: 'draft' | 'in-progress' | 'completed' | 'applied' | 'archived';
 }
 
@@ -51,6 +52,7 @@ const JourneySchema = new Schema<Journey>(
     resumeText: { type: String, required: true },
     insights: { type: String, default: null },
     coverLetter: { type: String, default: null },
+    tailoredResume: { type: String, default: null },
     status: {
       type: String,
       enum: ['draft', 'in-progress', 'completed', 'applied', 'archived'],

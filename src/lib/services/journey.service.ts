@@ -3,6 +3,7 @@ import { CreateJourneyInput, UpdateJourneyInput } from '@/lib/dtos/journeys/inpu
 import { JourneyClient } from '@/lib/db/models/journey.model';
 import { IAiService } from "@/lib/ai/ai.interface";
 import { ResumeService } from "@/lib/resume/resume.service";
+import { generateTailoredResumeMarkdown } from "@/lib/ai/resume-generator";
 
 export class JourneyService {
   constructor(
@@ -52,6 +53,7 @@ export class JourneyService {
         resumeText: journeyObj.resumeText,
         insights: journeyObj.insights,
         coverLetter: journeyObj.coverLetter,
+        tailoredResume: journeyObj.tailoredResume,
         status: journeyObj.status,
         createdAt: journeyObj.createdAt.toISOString(),
         updatedAt: journeyObj.updatedAt.toISOString(),
@@ -76,6 +78,7 @@ export class JourneyService {
       resumeText: journey.resumeText,
       insights: journey.insights,
       coverLetter: journey.coverLetter,
+      tailoredResume: journey.tailoredResume,
       status: journey.status,
       createdAt: journey.createdAt.toISOString(),
       updatedAt: journey.updatedAt.toISOString(),
@@ -96,6 +99,7 @@ export class JourneyService {
       resumeText: journey.resumeText,
       insights: journey.insights,
       coverLetter: journey.coverLetter,
+      tailoredResume: journey.tailoredResume,
       status: journey.status,
       createdAt: journey.createdAt.toISOString(),
       updatedAt: journey.updatedAt.toISOString(),
@@ -123,6 +127,7 @@ export class JourneyService {
       resumeText: journey.resumeText,
       insights: journey.insights,
       coverLetter: journey.coverLetter,
+      tailoredResume: journey.tailoredResume,
       status: journey.status,
       createdAt: journey.createdAt.toISOString(),
       updatedAt: journey.updatedAt.toISOString(),
@@ -180,6 +185,28 @@ export class JourneyService {
     });
 
     await this.update(journeyId, { coverLetter });
+  }
+
+  /**
+   * Generates a tailored resume as Markdown for a journey.
+   * Always overwrites any previously stored content (supports regeneration).
+   */
+  async generateTailoredResume(journeyId: string, userId: string): Promise<void> {
+    const existingJourney = await this.findById(journeyId);
+    if (!existingJourney) {
+      throw new Error("Journey not found");
+    }
+
+    if (existingJourney.userId !== userId) {
+      throw new Error("Access denied");
+    }
+
+    const tailoredResume = await generateTailoredResumeMarkdown(
+      existingJourney.resumeText,
+      existingJourney.jobDescription
+    );
+
+    await this.update(journeyId, { tailoredResume });
   }
 
   async delete(id: string): Promise<void> {

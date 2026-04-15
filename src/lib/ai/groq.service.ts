@@ -27,10 +27,10 @@ class GroqService implements IAiService {
       const messages = constructInsightsMessages(resumeText, jobDescription);
       const completion = await groq.chat.completions.create({
         messages: messages,
-        model: "meta-llama/llama-4-scout-17b-16e-instruct",
+        model: "openai/gpt-oss-120b",
       });
 
-      const insights = completion.choices[0]?.message?.content || "";
+      const insights = completion.choices[0]?.message?.content?.trim() || "";
       logEvent("info", "Successfully generated insights from Groq");
       return { insights };
     } catch (error) {
@@ -49,10 +49,10 @@ class GroqService implements IAiService {
 
       const completion = await groq.chat.completions.create({
         messages: messages,
-        model: "meta-llama/llama-4-scout-17b-16e-instruct",
+        model: "openai/gpt-oss-120b",
       });
 
-      const coverLetter = completion.choices[0]?.message?.content || "";
+      const coverLetter = completion.choices[0]?.message?.content?.trim() || "";
       logEvent("info", "Successfully generated cover letter from Groq");
       return { coverLetter };
     } catch (error) {

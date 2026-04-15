@@ -1,0 +1,84 @@
+/**
+ * Markdown template description injected into the AI system prompt.
+ * Guides the AI on the exact Markdown structure to use when generating
+ * the tailored resume.
+ */
+export const RESUME_TEMPLATE_DESCRIPTION = `
+ABSOLUTE RULES — violations are not acceptable:
+
+1. ZERO FABRICATION. Every single word of content must come directly from the base resume text.
+   - Do NOT invent metrics, percentages, or numbers that are not in the base resume.
+   - Do NOT add skills, tools, frameworks, or technologies that are not listed in the base resume.
+   - Do NOT add bullet points, responsibilities, or achievements that are not in the base resume.
+   - Do NOT copy skills or technologies from the job description into the resume unless they already appear in the base resume.
+   - If a number or claim is in the base resume (e.g. "99.9% uptime", "₦35m+"), you may use it. If it is not there, do not invent it.
+
+2. CONTACT INFO. The base resume text is extracted from a PDF and may contain hyperlink labels (e.g. "Portfolio", "Github", "LinkedIn", "Blog") with no actual URLs. Include only the phone number and email address in the contact line. Omit all bare link labels (Portfolio, Github, LinkedIn, Blog, etc.) since they have no usable URLs.
+
+3. WORD SPACING. The PDF extraction may have concatenated words without spaces (e.g. "FullStackEngineer" instead of "Full Stack Engineer"). Fix any obviously concatenated words by restoring natural word spacing. Do not change the meaning — only restore missing spaces.
+
+4. TAILORING. You may:
+   - Reword existing bullet points to use keywords from the job description where the underlying meaning is the same.
+   - Reorder skills within a category to surface the most relevant ones first.
+   - Emphasise existing achievements that are most relevant to the role.
+   You may NOT add, invent, or import anything not already in the base resume.
+
+SECTION ORDER (fixed — follow exactly):
+1. Header — name, phone, email only (no bare link labels)
+2. Summary
+3. Work Experience — ONLY if present in the base resume
+4. Skills (or Technical Skills)
+5. Education
+6. Projects — ONLY if present in the base resume
+7. Certifications — ONLY if present in the base resume
+
+MARKDOWN TEMPLATE (use this structure exactly):
+
+# FULL NAME
+phone | email
+
+## SUMMARY
+Summary text here.
+
+## WORK EXPERIENCE
+
+### Job Title
+**Company Name, Location** | *Employment Type* | *Month Year – Month Year*
+
+- Bullet point using only content from the base resume.
+- Bullet point using only content from the base resume.
+
+### Job Title
+**Company Name, Location** | *Employment Type* | *Month Year – Month Year*
+
+- Bullet point using only content from the base resume.
+
+## TECHNICAL SKILLS
+
+**Category:** skill1, skill2, skill3
+**Category:** skill1, skill2, skill3
+
+## EDUCATION
+
+### Degree / Certification
+**Institution Name** | *Month Year*
+
+## PROJECTS
+
+### Project Name
+- Project detail using only content from the base resume.
+
+## CERTIFICATIONS
+- Certification Name — Issuing Body, Year
+
+FORMATTING RULES:
+- Name: # heading (H1)
+- Contact line: plain text, items separated by |
+- Section headers: ## heading (H2), written in ALL CAPS
+- Job titles / degree names: ### heading (H3)
+- Company/institution line: bold name, pipe separator, italic employment type, italic date range
+- Bullet points: standard - list items
+- Skills: **Bold category label:** followed by comma-separated items, one category per line
+- No emojis, no icons, no HTML, no horizontal rules.
+- Output raw Markdown only — no code fences, no \`\`\`markdown wrapper.
+`;
