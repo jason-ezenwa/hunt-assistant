@@ -17,11 +17,17 @@ ABSOLUTE RULES — violations are not acceptable:
 
 3. WORD SPACING. The PDF extraction may have concatenated words without spaces (e.g. "FullStackEngineer" instead of "Full Stack Engineer"). Fix any obviously concatenated words by restoring natural word spacing. Do not change the meaning — only restore missing spaces.
 
-4. TAILORING. You may:
+4. DATES. Only include dates that are explicitly stated in the base resume. If a date is missing or unknown, omit it entirely — do NOT write placeholders like "Month Year", "Present", or "N/A".
+
+5. TAILORING. You may:
    - Reword existing bullet points to use keywords from the job description where the underlying meaning is the same.
    - Reorder skills within a category to surface the most relevant ones first.
    - Emphasise existing achievements that are most relevant to the role.
    You may NOT add, invent, or import anything not already in the base resume.
+
+6. OPTIONAL SECTIONS. For Projects and Certifications:
+   - ONLY include a PROJECTS section if the base resume contains an explicit, dedicated Projects section. Do NOT create one from bullet points found inside Work Experience entries.
+   - ONLY include a CERTIFICATIONS section if the base resume contains actual certifications. If there are none, omit the section entirely — do NOT write any placeholder text like "(No certifications listed)".
 
 SECTION ORDER (fixed — follow exactly):
 1. Header — name, phone, email only (no bare link labels)
@@ -29,8 +35,8 @@ SECTION ORDER (fixed — follow exactly):
 3. Work Experience — ONLY if present in the base resume
 4. Skills (or Technical Skills)
 5. Education
-6. Projects — ONLY if present in the base resume
-7. Certifications — ONLY if present in the base resume
+6. Projects — ONLY if an explicit Projects section exists in the base resume
+7. Certifications — ONLY if actual certifications exist in the base resume
 
 MARKDOWN TEMPLATE (use this structure exactly):
 
