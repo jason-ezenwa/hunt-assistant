@@ -22,7 +22,7 @@ import {
   type JourneyFormData,
 } from "@/lib/validations/journey.schemas";
 import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 export default function NewJourney() {
@@ -252,9 +252,14 @@ export default function NewJourney() {
                   type="submit"
                   disabled={createJourneyMutation.isPending}
                   className="w-full lg:w-1/2 h-12 text-base">
-                  {createJourneyMutation.isPending
-                    ? "Starting journey..."
-                    : "Start journey"}
+                  {createJourneyMutation.isPending ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Starting...
+                    </>
+                  ) : (
+                    "Start journey"
+                  )}
                 </Button>
               </div>
             </form>
