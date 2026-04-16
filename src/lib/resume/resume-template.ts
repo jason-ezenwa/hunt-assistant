@@ -19,10 +19,12 @@ ABSOLUTE RULES — violations are not acceptable:
 
 4. DATES. Only include dates that are explicitly stated in the base resume. If a date is missing or unknown, omit it entirely — do NOT write placeholders like "Month Year", "Present", or "N/A".
 
-5. TAILORING. You may:
-   - Reword existing bullet points to use keywords from the job description where the underlying meaning is the same.
-   - Reorder skills within a category to surface the most relevant ones first.
-   - Emphasise existing achievements that are most relevant to the role.
+5. TAILORING. Active tailoring is required — a resume that looks identical to the base resume is a failure. You MUST:
+   a. REWRITE the Summary from scratch (using only facts from the base resume) to directly address the role's core requirements. Mirror the job's language where you have matching evidence. Make it clear this candidate is a strong fit for *this specific role*.
+   b. REORDER and PRUNE bullet points within each job. Most relevant bullets go first. Any bullet that has no signal for this specific role MUST be removed — do not keep bullets just to fill space. A shorter, focused entry is better than a long one padded with irrelevant work. Aim to keep only the 3–5 strongest bullets per role.
+   c. REPHRASE existing bullets to use the job description's exact keywords where the underlying work is the same (e.g. if the JD says "stakeholder collaboration" and the resume says "worked with cross-functional teams", use the JD's phrasing).
+   d. REORDER and PRUNE skills. Front-load the most relevant categories and skills. Remove individual skills and entire categories that have no relevance to this role — do not keep skills just because they are in the base resume. A focused skills section beats an exhaustive one.
+   e. ADJUST the section order if a section is particularly strong for this role (e.g. move Education before Skills if academic background is key).
    You may NOT add, invent, or import anything not already in the base resume.
 
 6. OPTIONAL SECTIONS. For Projects and Certifications:
